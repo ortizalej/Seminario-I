@@ -5,12 +5,12 @@ import { View } from '../components/Themed';
 import { Container, Header, Content, Button } from 'native-base';
 import { withSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function LoginScreen() {
+export default function WelcomeScreen() {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Tab One</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/LoginScreen.tsx" /> */}
+      <EditScreenInfo path="/screens/WelcomeScreen.tsx" /> */}
       <View style={styles.content}>
         <Image source={require('../assets/images/logo.png')} style={{ width: 280, height: 200 }} />
       </View>
@@ -19,7 +19,7 @@ export default function LoginScreen() {
           block primary 
           style={{ ...styles.button}}
         >
-          <Text style={styles.buttonText}>Acceder</Text>
+          <Text style={styles.buttonText}>Ingresar</Text>
         </Button>
       </View>
     </View>

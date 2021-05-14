@@ -14,12 +14,12 @@ export default {
         screens: {
           TabOne: {
             screens: {
-              LoginScreen: 'one',
+              WelcomeScreen: 'one',
             },
           },
           TabTwo: {
             screens: {
-              TabTwoScreen: 'two',
+              LoginScreen: 'two',
             },
           },
         },

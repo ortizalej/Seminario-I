@@ -3,6 +3,14 @@
  * https://reactnavigation.org/docs/typescript/
  */
 
+ export type TabOneParamList = {
+  WelcomeScreen: undefined;
+};
+
+export type TabTwoParamList = {
+  LoginScreen: undefined;
+};
+
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
@@ -11,12 +19,4 @@ export type RootStackParamList = {
 export type BottomTabParamList = {
   TabOne: undefined;
   TabTwo: undefined;
-};
-
-export type TabOneParamList = {
-  LoginScreen: undefined;
-};
-
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
 };
