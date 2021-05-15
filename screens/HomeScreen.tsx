@@ -9,7 +9,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>HOME</Text>
+          <Text style={styles.buttonText}>HOME SCREEN</Text>
       </View>
     </View>
   );
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     textAlign: 'center',
     fontFamily: 'Roboto',
-    color: 'white'
+    color: '#656771'
   },
   separator: {
     marginVertical: 30,
