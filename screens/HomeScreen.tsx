@@ -5,22 +5,11 @@ import { View } from '../components/Themed';
 import { Container, Header, Content, Button } from 'native-base';
 import { withSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function LoginScreen() {
+export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/LoginScreen.tsx" /> */}
-      <View style={styles.content}>
-        <Image source={require('../assets/images/logo.png')} style={{ width: 280, height: 200 }} />
-      </View>
       <View style={styles.buttonContainer}>
-        <Button 
-          block primary 
-          style={{ ...styles.button}}
-        >
-          <Text style={styles.buttonText}>Acceder</Text>
-        </Button>
+          <Text style={styles.buttonText}>HOME</Text>
       </View>
     </View>
   );
@@ -30,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     backgroundColor: 'white'
   },
   content: {

@@ -11,7 +11,7 @@ import * as React from 'react';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import WelcomeScreen from '../screens/Welcome';
-import LoginScreen from '../screens/Login';
+import LoginScreen from '../screens/LoginScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
 

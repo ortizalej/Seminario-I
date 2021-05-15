@@ -12,6 +12,8 @@ export type TabTwoParamList = {
 };
 
 export type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
   Root: undefined;
   NotFound: undefined;
 };
