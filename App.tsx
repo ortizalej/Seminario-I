@@ -1,13 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
-import { useFonts } from 'expo-font';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import useCachedResources from "./hooks/useCachedResources";
+import useColorScheme from "./hooks/useColorScheme";
+import Navigation from "./navigation";
+import { useFonts } from "expo-font";
 // import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading';
+import AppLoading from "expo-app-loading";
+import ThemeManager from "./themes/ThemeManager";
 
 // const fetchFonts = () => {
 //   return Font.loadAsync({
@@ -16,17 +17,15 @@ import AppLoading from 'expo-app-loading';
 //   'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
 //   });
 // };
-  
-export default function App() {
 
+export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   let [fontsLoaded] = useFonts({
-    'Roboto-Black': require('./assets/fonts/Roboto-Black.ttf'),
-    'zocial': require('./assets/fonts/zocial.ttf')
+    "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
+    zocial: require("./assets/fonts/zocial.ttf"),
   });
 
-  
   // else {
   //   return (
   //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -41,10 +40,11 @@ export default function App() {
     return null;
   } else {
     return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
+      <ThemeManager>
+        <SafeAreaProvider>
+          <Navigation colorScheme={colorScheme} />
+        </SafeAreaProvider>
+      </ThemeManager>
     );
   }
 }

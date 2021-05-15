@@ -3,11 +3,27 @@ import { ActivityIndicator, Image, StyleSheet } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { Text } from "react-native";
 import { View } from "../components/Themed";
-import { Button, Form, Item, Input, Spinner } from "native-base";
+import { Button, Form, Item, Input, Spinner, Container } from "native-base";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../styles/global";
 import * as Google from "expo-google-app-auth";
+import styled from "styled-components/native";
+
+const CustomContainer = styled.View`
+  flex: 1;
+  background-color: ${(props) => props.theme.background};
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const ButtonContainer = styled.View`
+  margin-bottom: 40px;
+  background-color: ${(props) => props.theme.background};
+  width: 80%;
+  align-items: center;
+  justify-content: flex-start;
+`;
 
 const AND_CLIENT_ID = "MT0Mi4mMZ36VOT7dM136dEeo";
 async function signInWithGoogleAsync() {
@@ -48,10 +64,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={[styles.container]}>
-      {/* <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor='#eee' darkColor='rgba(255,255,255,0.1)' />
-      <EditScreenInfo path='/screens/LoginScreen.tsx' /> */}
+    <CustomContainer>
       <View style={[styles.content, { backgroundColor: "transparent" }]}>
         <Image
           source={require("../assets/images/logo.png")}
@@ -128,7 +141,7 @@ export default function LoginScreen() {
           justifyContent: "center",
         }}
       >
-        <View style={styles.buttonContainer}>
+        <ButtonContainer>
           <Button
             block
             primary
@@ -148,7 +161,7 @@ export default function LoginScreen() {
             />
             <Text style={globalStyles.buttonText}>Continúa con Google</Text>
           </Button>
-        </View>
+        </ButtonContainer>
         <View
           style={{
             flexDirection: "row",
@@ -171,7 +184,7 @@ export default function LoginScreen() {
           <ActivityIndicator size="large" color="#5985EB" />
         </View>
       )}
-    </View>
+    </CustomContainer>
   );
 }
 
@@ -181,6 +194,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     backgroundColor: "white",
+    width: "100%",
   },
   content: {
     flex: 1,
@@ -195,13 +209,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 0,
   },
-  buttonContainer: {
-    marginBottom: 40,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "white",
-    width: "80%",
-  },
+  // buttonContainer: {
+  //   marginBottom: 40,
+  //   alignItems: "center",
+  //   justifyContent: "flex-start",
+  //   backgroundColor: "white",
+  //   width: "80%",
+  // },
   button: {
     width: "90%",
     backgroundColor: "#5985EB",
