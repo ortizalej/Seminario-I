@@ -1,30 +1,16 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Image, StyleSheet } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, TextInput } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { Text } from "react-native";
-import { View } from "../components/Themed";
+import { View } from "../../components/Themed";
 import { Button, Form, Item, Input } from "native-base";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/core";
-import globalStyles from "../styles/global";
+import globalStyles from "../../styles/global";
 import * as Google from "expo-google-app-auth";
-import styled from "styled-components/native";
-import Spinner from "../components/Spinner";
+import Spinner from "../../components/Spinner";
 
-const CustomContainer = styled.View`
-  flex: 1;
-  background-color: ${(props) => props.theme.backgroundColor};
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-const ButtonContainer = styled.View`
-  margin-bottom: 40px;
-  background-color: ${(props) => props.theme.backgroundColor};
-  width: 80%;
-  align-items: center;
-  justify-content: flex-start;
-`;
+import { CustomContainer, ButtonContainer } from "./login.styles";
 
 const AND_CLIENT_ID = "MT0Mi4mMZ36VOT7dM136dEeo";
 async function signInWithGoogleAsync() {
@@ -68,7 +54,7 @@ export default function LoginScreen() {
     <CustomContainer>
       <View style={[styles.content, { backgroundColor: "transparent" }]}>
         <Image
-          source={require("../assets/images/logo.png")}
+          source={require("../../assets/images/logo.png")}
           style={{ width: 280, height: 200, marginBottom: -20 }}
         />
         <Text style={styles.title}>Ingresá tus datos</Text>
@@ -79,7 +65,6 @@ export default function LoginScreen() {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          // backgroundColor: "blue",
         }}
       >
         <View
@@ -88,7 +73,6 @@ export default function LoginScreen() {
             width: "100%",
             alignItems: "center",
             justifyContent: "center",
-            // backgroundColor: "blue",
           }}
         >
           <Form>
@@ -119,7 +103,6 @@ export default function LoginScreen() {
             alignItems: "center",
             width: "100%",
             flex: 1,
-            // backgroundColor: "red",
             marginBottom: 60,
           }}
         >
@@ -157,7 +140,7 @@ export default function LoginScreen() {
             style={[globalStyles.button, { backgroundColor: "#2d3748" }]}
           >
             <Image
-              source={require("../assets/images/googleIcon.png")}
+              source={require("../../assets/images/googleIcon.png")}
               style={{ width: 34, height: 34, marginRight: 20 }}
             />
             <Text style={globalStyles.buttonText}>Continúa con Google</Text>
@@ -186,13 +169,6 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "white",
-    width: "100%",
-  },
   content: {
     flex: 1,
     alignItems: "center",

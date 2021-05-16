@@ -1,84 +1,29 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Image,
   StyleSheet,
-  TextInput,
-  Button as NativeButtom,
+  ToastAndroid,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { Text } from "react-native";
-import { View } from "../components/Themed";
+import { View } from "../../components/Themed";
 import { Button, Form, Item, Input } from "native-base";
 import { useNavigation } from "@react-navigation/core";
-import globalStyles from "../styles/global";
-import styled from "styled-components/native";
-import Spinner from "../components/Spinner";
+import globalStyles from "../../styles/global";
+import Spinner from "../../components/Spinner";
 import RNPhoneCodeSelect from "react-native-phone-code-select";
-
-const Content = styled.View`
-  flex: 2;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CustomContainer = styled.View`
-  flex: 1;
-  background-color: ${(props) => props.theme.backgroundColor};
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0;
-`;
-
-const InputContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  width: 100%;
-`;
-
-const ButtonContainer = styled.View`
-  margin-bottom: 40px;
-  background-color: ${(props) => props.theme.backgroundColor};
-  width: 80%;
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-const Title = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  color: ${(props) => props.theme.greyTextColor};
-  margin-bottom: 12px;
-  margin-top: 0px;
-  text-align: left;
-  width: 100%;
-`;
-
-const QuestionText = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  color: ${(props) => props.theme.greyTextColor};
-  margin-bottom: 12px;
-  margin-top: 0px;
-`;
-
-const LoginText = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  color: ${(props) => props.theme.darkBlue};
-  margin-bottom: 12px;
-  margin-top: 0px;
-  margin-left: 3px;
-`;
-
-const ContainerInput = styled(Item)`
-  color: ${(props) => props.theme.lightGreyTextColor};
-  margin-bottom: 20px;
-  border-width: 1px;
-  margin-left: 5px;
-  margin-right: 5px;
-`;
+import {
+  Content,
+  CustomContainer,
+  InputContainer,
+  ButtonContainer,
+  Title,
+  QuestionText,
+  LoginText,
+  ContainerInput,
+} from "./register.styles";
 
 interface SelectedCountry {
   name: string;
@@ -97,23 +42,84 @@ export default function RegisterScreen() {
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [msg, setMsg] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<SelectedCountry>();
   const [visible, setVisible] = useState<boolean>(false);
 
   const navigation = useNavigation();
 
-  const handleRegister = () => {
+  const createAccount = async () => {
+    setLoading(true);
+    // const resp = await createAccountService(nombre, email, password);
+
+    // if (resp.isSuccess) {
+    //   setMsg(resp.data);
+    setMsg(`${name} registrado correctamente`);
+    navigation.navigate("Login");
+    // } else {
+    //   setMsg(resp.data);
+    // }
+    setLoading(false);
+  };
+
+  const handleSubmit = async () => {
     setLoading(true);
     setTimeout(() => {
-      setLoading(false);
-      navigation.navigate("Login");
+      //validar
+      if (
+        name === "" ||
+        surname === "" ||
+        prefix === "" ||
+        phoneNumber === "" ||
+        email === "" ||
+        password === "" ||
+        !acceptTerms
+      ) {
+        // Mostrar un error
+        setLoading(false);
+        setMsg("Todos los campos son obligatorios");
+        return;
+      }
+
+      //password al menos 6 caracteres
+      if (password.length < 6) {
+        setLoading(false);
+        setMsg("El password debe ser de al menos 6 caracteres");
+        return;
+      }
+
+      //guardar el usuario
+      try {
+        setMsg("creando cuenta");
+        createAccount();
+      } catch (error) {
+        setMsg(error.message.replace("Error:", ""));
+        console.log("erroreee", error);
+      } finally {
+        setLoading(false);
+      }
     }, 1000);
   };
+
+  useEffect(() => {
+    if (msg) {
+      ToastAndroid.show(msg, ToastAndroid.SHORT);
+    }
+  }, [msg]);
+
+  useEffect(() => {
+    if (selectedCountry) {
+      setPrefix(selectedCountry.dial_code);
+    }
+  }, [selectedCountry]);
+
   return (
     <CustomContainer>
+      {/* <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView> */}
       <Content>
         <Image
-          source={require("../assets/images/logo.png")}
+          source={require("../../assets/images/logo.png")}
           style={{ width: 280, height: 200, marginBottom: -50 }}
         />
         <Title>Crear cuenta</Title>
@@ -137,7 +143,6 @@ export default function RegisterScreen() {
             </ContainerInput>
             <ContainerInput regular style={{ flex: 1 }}>
               <Input
-                secureTextEntry={true}
                 placeholder="Apellido"
                 onChangeText={(val) => setSurname(val)}
               />
@@ -151,7 +156,6 @@ export default function RegisterScreen() {
                 onFocus={() => setVisible(true)}
                 value={selectedCountry?.dial_code}
               />
-              {/* <PhoneInput style={{ height: 40 }} /> */}
               <PrefixPicker
                 visible={visible}
                 setVisible={setVisible}
@@ -160,7 +164,6 @@ export default function RegisterScreen() {
             </ContainerInput>
             <ContainerInput regular style={{ width: "70%" }}>
               <Input
-                secureTextEntry={true}
                 keyboardType="numeric"
                 placeholder="Telefono"
                 onChangeText={(val) => setPhoneNumber(val)}
@@ -170,7 +173,7 @@ export default function RegisterScreen() {
 
           <ContainerInput regular last style={{ width: "97%" }}>
             <Input
-              secureTextEntry={true}
+              keyboardType="email-address"
               placeholder="Email"
               onChangeText={(val) => setEmail(val)}
             />
@@ -202,7 +205,6 @@ export default function RegisterScreen() {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          // marginTop: -30,
           marginBottom: 30,
         }}
       >
@@ -211,7 +213,7 @@ export default function RegisterScreen() {
             block
             primary
             style={[globalStyles.button]}
-            onPress={() => handleRegister()}
+            onPress={() => handleSubmit()}
           >
             <Text style={globalStyles.buttonText}>Registrarme</Text>
           </Button>
@@ -231,6 +233,8 @@ export default function RegisterScreen() {
         </View>
       </View>
       {loading && <Spinner />}
+      {/* </ScrollView>
+      </SafeAreaView> */}
     </CustomContainer>
   );
 }
@@ -240,8 +244,8 @@ const PrefixPicker = ({ visible, setVisible, setSelectedCountry }) => (
     visible={visible}
     onDismiss={() => setVisible(false)}
     onCountryPress={(country) => setSelectedCountry(country)}
-    primaryColor="#f04a4a"
-    secondaryColor="#000000"
+    primaryColor="#5985EB"
+    secondaryColor="#E8E8E8"
     buttonText="Ok"
   />
 );

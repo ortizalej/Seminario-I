@@ -25,6 +25,7 @@ export default function App() {
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     zocial: require("./assets/fonts/zocial.ttf"),
   });
+  // console.disableYellowBox = true; // Para deshabilitar los warnings
 
   // else {
   //   return (
