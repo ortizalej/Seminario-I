@@ -3,23 +3,24 @@ import { ActivityIndicator, Image, StyleSheet } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 import { Text } from "react-native";
 import { View } from "../components/Themed";
-import { Button, Form, Item, Input, Spinner, Container } from "native-base";
+import { Button, Form, Item, Input } from "native-base";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../styles/global";
 import * as Google from "expo-google-app-auth";
 import styled from "styled-components/native";
+import Spinner from "../components/Spinner";
 
 const CustomContainer = styled.View`
   flex: 1;
-  background-color: ${(props) => props.theme.background};
+  background-color: ${(props) => props.theme.backgroundColor};
   align-items: center;
   justify-content: flex-start;
 `;
 
 const ButtonContainer = styled.View`
   margin-bottom: 40px;
-  background-color: ${(props) => props.theme.background};
+  background-color: ${(props) => props.theme.backgroundColor};
   width: 80%;
   align-items: center;
   justify-content: flex-start;
@@ -179,11 +180,7 @@ export default function LoginScreen() {
           </Text>
         </View>
       </View>
-      {loading && (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#5985EB" />
-        </View>
-      )}
+      {loading && <Spinner />}
     </CustomContainer>
   );
 }
@@ -209,13 +206,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 0,
   },
-  // buttonContainer: {
-  //   marginBottom: 40,
-  //   alignItems: "center",
-  //   justifyContent: "flex-start",
-  //   backgroundColor: "white",
-  //   width: "80%",
-  // },
   button: {
     width: "90%",
     backgroundColor: "#5985EB",
@@ -228,31 +218,12 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     color: "white",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
   checkboxContainer: {
     flexDirection: "row",
-    // marginBottom: 20,
   },
-  checkbox: {
-    // alignSelf: "center",
-  },
+  checkbox: {},
   checkboxLabel: {
     margin: 8,
     color: "#656771",
-  },
-  loading: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    opacity: 0.5,
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
