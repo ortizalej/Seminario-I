@@ -13,14 +13,23 @@ import Spinner from "../../components/Spinner";
 import PropTypes from "prop-types";
 import { CustomContainer, ButtonContainer, Title } from "./login.styles";
 import { authUserService } from "../../services/userService";
+import * as GoogleSignIn from "expo-google-sign-in";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+//   User as GoogleUser,
+// } from "@react-native-community/google-signin";
+import { State } from "react-native-gesture-handler";
 
-const AND_CLIENT_ID = "MT0Mi4mMZ36VOT7dM136dEeo";
+const AND_CLIENT_ID =
+  "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com";
 async function signInWithGoogleAsync() {
   try {
     const result = await Google.logInAsync({
-      behavior: "web",
-      // iosClientId: IOS_CLIENT_ID,
+      // behavior: "web",
+      // iosClientId: AND_CLIENT_ID,
       androidClientId: AND_CLIENT_ID,
+      // redirectUrl: "/sarasa",
       scopes: ["profile", "email"],
     });
 
@@ -41,8 +50,32 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
 
-  // const [userGoogle, setUserGoogle] = useState<GoogleUser>();
+  const [loginGoogleLoaded, setLoginGoogleLoaded] = useState<boolean>(false);
+  // const [userGoogleInfo, setUserGoogleInfo] = useState<GoogleUser>();
+
+  const [userGoogle, setUserGoogle] =
+    useState<GoogleSignIn.GoogleUser | null>();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    // initAsync();
+    // GoogleSignin.configure({
+    //   webClientId:
+    //     "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
+    //   offlineAccess: true,
+    // });
+  }, []);
+
+  // const signIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     setLoginGoogleLoaded(true);
+  //     setUserGoogleInfo(userInfo);
+  //   } catch (error) {
+  //     console.log("errorrrr", error.message);
+  //   }
+  // };
 
   useEffect(() => {
     if (msg) {
@@ -50,8 +83,49 @@ export default function LoginScreen() {
     }
   }, [msg]);
 
+  // const initAsync = async () => {
+  //   await GoogleSignIn.initAsync({
+  //     // You may ommit the clientId when the firebase `googleServicesFile` is configured
+  //     clientId:
+  //       "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
+  //     webClientId:
+  //       "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
+  //   });
+  //   _syncUserWithStateAsync();
+  // };
+
+  const _syncUserWithStateAsync = async () => {
+    const user = await GoogleSignIn.signInSilentlyAsync();
+    setUserGoogle(user);
+  };
+
+  const signOutAsync = async () => {
+    await GoogleSignIn.signOutAsync();
+    setUserGoogle(null);
+  };
+
+  const signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      if (type === "success") {
+        _syncUserWithStateAsync();
+      }
+    } catch ({ message }) {
+      alert("login: Error:" + message);
+    }
+  };
+
   const signInWithGoogle = () => {
     signInWithGoogleAsync();
+  };
+
+  const onPress = () => {
+    if (userGoogle) {
+      signOutAsync();
+    } else {
+      signInAsync();
+    }
   };
 
   const login = async () => {
@@ -86,25 +160,25 @@ export default function LoginScreen() {
   };
 
   // Somewhere in your code
-  const signIn = async () => {
-    try {
-      // await GoogleSignin.hasPlayServices();
-      // const userInfo = await GoogleSignin.signIn();
-      // console.log("GoogleUser", userInfo);
-      // setUserGoogle(userInfo);
-    } catch (error) {
-      console.log("errorrrrr", error);
-      // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-      //   // user cancelled the login flow
-      // } else if (error.code === statusCodes.IN_PROGRESS) {
-      //   // operation (e.g. sign in) is in progress already
-      // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-      //   // play services not available or outdated
-      // } else {
-      //   // some other error happened
-      // }
-    }
-  };
+  // const signIn = async () => {
+  //   try {
+  //     // await GoogleSignin.hasPlayServices();
+  //     // const userInfo = await GoogleSignin.signIn();
+  //     // console.log("GoogleUser", userInfo);
+  //     // setUserGoogle(userInfo);
+  //   } catch (error) {
+  //     console.log("errorrrrr", error);
+  //     // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //     //   // user cancelled the login flow
+  //     // } else if (error.code === statusCodes.IN_PROGRESS) {
+  //     //   // operation (e.g. sign in) is in progress already
+  //     // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+  //     //   // play services not available or outdated
+  //     // } else {
+  //     //   // some other error happened
+  //     // }
+  //   }
+  // };
 
   return (
     <CustomContainer>
@@ -199,7 +273,9 @@ export default function LoginScreen() {
           </Button>
           <Button
             block
-            onPress={() => signIn()}
+            // onPress={() => signIn()}
+            onPress={() => signInWithGoogle()}
+            // onPress={() => onPress()}
             style={[globalStyles.button, { backgroundColor: "#2d3748" }]}
           >
             <Image
@@ -208,6 +284,19 @@ export default function LoginScreen() {
             />
             <Text style={globalStyles.buttonText}>Continúa con Google</Text>
           </Button>
+          {/* <GoogleSigninButton
+            onPress={() => signIn()}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            style={{ width: 100, height: 100 }}
+          /> */}
+          {/* {loginGoogleLoaded ? (
+            <View>
+              <Text>sarasa</Text>
+            </View>
+          ) : (
+            <Text>Not SignedIn</Text>
+          )} */}
         </ButtonContainer>
         <View
           style={{
