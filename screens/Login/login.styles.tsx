@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Text } from "react-native";
 
 export const CustomContainer = styled.View`
   flex: 1;
@@ -13,4 +14,12 @@ export const ButtonContainer = styled.View`
   width: 80%;
   align-items: center;
   justify-content: flex-start;
+`;
+
+export const Title = styled.Text`
+  font-size: 20;
+  font-weight: bold;
+  color: ${(props) => props.theme.textColor};
+  margin-bottom: 12px
+  marginTop: 0
 `;

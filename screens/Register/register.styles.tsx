@@ -5,6 +5,7 @@ export const Content = styled.View`
   flex: 3;
   align-items: center;
   justify-content: center;
+  margin-top: 30px;
 `;
 
 export const CustomContainer = styled.View`
@@ -35,8 +36,8 @@ export const Title = styled.Text`
   font-size: 20px;
   font-weight: bold;
   color: ${(props) => props.theme.greyTextColor};
-  margin-bottom: 12px;
-  margin-top: 0px;
+  margin-bottom: 32px;
+  margin-top: -14px;
   text-align: center;
   width: 100%;
 `;

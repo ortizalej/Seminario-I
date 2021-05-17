@@ -1,4 +1,4 @@
-export const getResult = async (data, isSuccess) => {
-  const result = { data: data, isSuccess: isSuccess };
+export const getResult = async (msg = "", isSuccess = true) => {
+  const result = { msg: msg, isSuccess: isSuccess };
   return result;
 };

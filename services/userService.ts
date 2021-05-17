@@ -1,6 +1,8 @@
 import React from "react";
 import clientAxios from "../config/axios";
 import useUserLogged from "../hooks/useUserLogged";
+import { ServiceResult } from "../types/global";
+import { User } from "../types/user";
 import { getResult } from "../utils";
 import { saveItem, USERLOGGED } from "../utils/storage";
 // import { saveItem, USERLOGGED } from "../utils/storage";
@@ -56,19 +58,19 @@ export const authUserService = async (email, password) => {
   }
 };
 
-export const createAccountService = async (name, email, password) => {
+export const createAccountService = async (
+  user: User
+): Promise<ServiceResult<any>> => {
   try {
-    const resp = await clientAxios.post(`/users/`, {
-      name,
-      email,
-      password,
-    });
-
-    if (resp) {
+    console.log("user", user);
+    const resp = await clientAxios.post(`/users/`, user);
+    if (resp && resp.data) {
       return getResult(
-        `Usuario creado correctamente, !Bienvenido ${name}!`,
+        `Usuario creado correctamente, !Bienvenido ${user.name}!`,
         true
       );
+    } else {
+      return getResult();
     }
   } catch (error) {
     return getResult(error.response.data.errores[0].msg, false);

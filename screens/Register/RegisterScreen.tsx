@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import CheckBox from "@react-native-community/checkbox";
+// import CheckBox from "@react-native-community/checkbox";
+import { Checkbox } from "react-native-paper";
 import { Text } from "react-native";
 import { View } from "../../components/Themed";
 import { Button, Form, Item, Input } from "native-base";
@@ -24,6 +25,10 @@ import {
   LoginText,
   ContainerInput,
 } from "./register.styles";
+import { User } from "../../types/user";
+import { createAccountService } from "../../services/userService";
+import { ServiceResult } from "../../types/global";
+import Modal from "../../components/Modal";
 
 interface SelectedCountry {
   name: string;
@@ -42,6 +47,8 @@ export default function RegisterScreen() {
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [showTerms, setShowTerms] = useState<boolean>(false);
+
   const [msg, setMsg] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<SelectedCountry>();
   const [visible, setVisible] = useState<boolean>(false);
@@ -50,15 +57,23 @@ export default function RegisterScreen() {
 
   const createAccount = async () => {
     setLoading(true);
-    // const resp = await createAccountService(nombre, email, password);
-
-    // if (resp.isSuccess) {
-    //   setMsg(resp.data);
-    setMsg(`${name} registrado correctamente`);
-    navigation.navigate("Login");
-    // } else {
-    //   setMsg(resp.data);
-    // }
+    const user: User = {
+      name,
+      surname,
+      phoneNumber,
+      prefix,
+      email,
+      password,
+    };
+    const resp = await createAccountService(user);
+    alert(resp);
+    if (resp.isSuccess) {
+      setMsg(resp.msg);
+      setMsg(`${name} registrado correctamente`);
+      navigation.navigate("Login");
+    } else {
+      setMsg(resp.msg);
+    }
     setLoading(false);
   };
 
@@ -90,7 +105,6 @@ export default function RegisterScreen() {
 
       //guardar el usuario
       try {
-        setMsg("creando cuenta");
         createAccount();
       } catch (error) {
         setMsg(error.message.replace("Error:", ""));
@@ -115,126 +129,163 @@ export default function RegisterScreen() {
 
   return (
     <CustomContainer>
-      {/* <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView> */}
-      <Content>
-        <Image
-          source={require("../../assets/images/logo.png")}
-          style={{ width: 280, height: 200, marginBottom: -50 }}
-        />
-        <Title>Crear cuenta</Title>
-      </Content>
-      <View
-        testID="formLogin"
-        style={{
-          flex: 4,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Form style={{ width: "90%" }}>
-          <InputContainer>
-            <ContainerInput regular style={{ flex: 1 }}>
-              <Input
-                placeholder="Nombre"
-                onChangeText={(val) => setName(val)}
-              />
-            </ContainerInput>
-            <ContainerInput regular style={{ flex: 1 }}>
-              <Input
-                placeholder="Apellido"
-                onChangeText={(val) => setSurname(val)}
-              />
-            </ContainerInput>
-          </InputContainer>
-
-          <InputContainer>
-            <ContainerInput regular style={{ flex: 1 }}>
-              <Input
-                placeholder="Prefijo"
-                onFocus={() => setVisible(true)}
-                value={selectedCountry?.dial_code}
-              />
-              <PrefixPicker
-                visible={visible}
-                setVisible={setVisible}
-                setSelectedCountry={setSelectedCountry}
-              />
-            </ContainerInput>
-            <ContainerInput regular style={{ width: "70%" }}>
-              <Input
-                keyboardType="numeric"
-                placeholder="Telefono"
-                onChangeText={(val) => setPhoneNumber(val)}
-              />
-            </ContainerInput>
-          </InputContainer>
-
-          <ContainerInput regular last style={{ width: "97%" }}>
-            <Input
-              keyboardType="email-address"
-              placeholder="Email"
-              onChangeText={(val) => setEmail(val)}
+      <SafeAreaView style={{ flex: 1, marginBottom: 30 }}>
+        <ScrollView>
+          <Content>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={{ width: 280, height: 200 }}
             />
-          </ContainerInput>
-          <ContainerInput regular last style={{ width: "97%" }}>
-            <Input
-              secureTextEntry={true}
-              placeholder="Contraseña"
-              onChangeText={(val) => setPassword(val)}
-            />
-          </ContainerInput>
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              value={acceptTerms}
-              onValueChange={setAcceptTerms}
-              style={styles.checkbox}
-            />
-            <Text style={styles.checkboxLabel}>
-              Estoy de acuerdo y acepto los terminos y condiciones
-            </Text>
-          </View>
-        </Form>
-      </View>
-
-      <View
-        testID="button-Container"
-        style={{
-          flex: 1,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 30,
-        }}
-      >
-        <ButtonContainer>
-          <Button
-            block
-            primary
-            style={[globalStyles.button]}
-            onPress={() => handleSubmit()}
+            <Title>Crear cuenta</Title>
+          </Content>
+          <View
+            testID="formLogin"
+            style={{
+              flex: 4,
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
           >
-            <Text style={globalStyles.buttonText}>Registrarme</Text>
-          </Button>
-        </ButtonContainer>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <QuestionText>¿Ya estás registrado?</QuestionText>
-          <LoginText onPress={() => navigation.navigate("Register")}>
-            Ingresá
-          </LoginText>
-        </View>
-      </View>
+            <Form style={{ width: "90%" }}>
+              <InputContainer>
+                <ContainerInput regular style={{ flex: 1 }}>
+                  <Input
+                    placeholder="Nombre"
+                    onChangeText={(val) => setName(val)}
+                  />
+                </ContainerInput>
+                <ContainerInput regular style={{ flex: 1 }}>
+                  <Input
+                    placeholder="Apellido"
+                    onChangeText={(val) => setSurname(val)}
+                  />
+                </ContainerInput>
+              </InputContainer>
+
+              <InputContainer>
+                <ContainerInput regular style={{ flex: 1 }}>
+                  <Input
+                    placeholder="Prefijo"
+                    onFocus={() => setVisible(true)}
+                    value={selectedCountry?.dial_code}
+                  />
+                  <PrefixPicker
+                    visible={visible}
+                    setVisible={setVisible}
+                    setSelectedCountry={setSelectedCountry}
+                  />
+                </ContainerInput>
+                <ContainerInput regular style={{ width: "70%" }}>
+                  <Input
+                    keyboardType="numeric"
+                    placeholder="Teléfono"
+                    onChangeText={(val) => setPhoneNumber(val)}
+                  />
+                </ContainerInput>
+              </InputContainer>
+
+              <ContainerInput regular last style={{ width: "97%" }}>
+                <Input
+                  keyboardType="email-address"
+                  placeholder="Email"
+                  onChangeText={(val) => setEmail(val)}
+                />
+              </ContainerInput>
+              <ContainerInput regular last style={{ width: "97%" }}>
+                <Input
+                  secureTextEntry={true}
+                  placeholder="Contraseña"
+                  onChangeText={(val) => setPassword(val)}
+                />
+              </ContainerInput>
+              <View style={styles.checkboxContainer}>
+                {/* <CheckBox
+                  value={acceptTerms}
+                  onValueChange={setAcceptTerms}
+                  style={styles.checkbox}
+                /> */}
+                <Checkbox
+                  status={acceptTerms ? "checked" : "unchecked"}
+                  color="#5985EB"
+                  onPress={() => {
+                    setAcceptTerms(!acceptTerms);
+                  }}
+                />
+                <Text style={styles.checkboxLabel}>
+                  Estoy de acuerdo y acepto los{" "}
+                  <Text
+                    style={{
+                      color: "#5985EB",
+                      textDecorationLine: "underline",
+                    }}
+                    onPress={() => setShowTerms(!showTerms)}
+                  >
+                    terminos y condiciones
+                  </Text>
+                </Text>
+              </View>
+            </Form>
+            {/* </ScrollView>
+        </SafeAreaView> */}
+          </View>
+          {/* <SafeAreaView style={{ flex: 1, marginBottom: 30 }}>
+        <ScrollView> */}
+          <View
+            testID="button-Container"
+            style={{
+              flex: 1,
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 60,
+            }}
+          >
+            <ButtonContainer>
+              <Button
+                block
+                primary
+                style={[globalStyles.button]}
+                onPress={() => handleSubmit()}
+              >
+                <Text style={globalStyles.buttonText}>Registrarme</Text>
+              </Button>
+            </ButtonContainer>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <QuestionText>¿Ya estás registrado?</QuestionText>
+              <LoginText onPress={() => navigation.navigate("Register")}>
+                Ingresá
+              </LoginText>
+            </View>
+          </View>
+        </ScrollView>
+        <Modal
+          text="Los presentes términos y condiciones (en lo sucesivo los 'Términos y Condiciones de la Aplicación')
+          contienen los acuerdos que rigen (i) la relación entre Passenger, S.A. de C.V., o sus filiales o
+          subsidiarias (en lo sucesivo la “Sociedad”), con las personas (en lo sucesivo el o los “Usuario(s)”) que
+          descarguen cualesquier aplicación desarrollada por la Sociedad (en lo sucesivo la o las “Aplicación(es)”), (ii)
+          así como las marcas, los productos y los servicios que preste la Sociedad (en lo sucesivo los “Servicios”). Al
+          descargar la Aplicación, el Usuario deberá manifestar su aceptación de los presentes Términos y Condiciones
+          de la Aplicación a efecto de poder usar la Aplicación, y en caso de que no los acepte, el Usuario deberá de
+          abstenerse de usar la Aplicación.
+          Cualesquier término no definido en los presentes Términos y Condiciones de la Aplicación se entenderán
+          definidos en los Términos y Condiciones del Sitio. Cualquier cuestión no prevista por los Términos y
+          Condiciones de la Aplicación, los Términos y Condiciones del Sitio se aplicarán de forma supletoria. En caso
+          de interpretación o controversia con entre los Términos y Condiciones de la Aplicación y los Términos y
+          Condiciones del Sitio, prevalecerán los últimos sobre los primeros."
+          visible={showTerms}
+          onClose={() => setShowTerms(false)}
+        />
+      </SafeAreaView>
+
       {loading && <Spinner />}
-      {/* </ScrollView>
-      </SafeAreaView> */}
     </CustomContainer>
   );
 }
@@ -273,5 +324,6 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     margin: 8,
     color: "#656771",
+    fontSize: 15,
   },
 });
