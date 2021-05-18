@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { LogBox, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
@@ -37,8 +37,8 @@ export default function App() {
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     zocial: require("./assets/fonts/zocial.ttf"),
   });
-  console.disableYellowBox = true; // Para deshabilitar los warnings
-
+  // console.disableYellowBox = true; // Para deshabilitar los warnings
+  LogBox.ignoreAllLogs(); // Para deshabilitar los warnings
   // else {
   //   return (
   //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

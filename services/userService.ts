@@ -1,8 +1,7 @@
 import React from "react";
 import clientAxios from "../config/axios";
 import useUserLogged from "../hooks/useUserLogged";
-import { ServiceResult } from "../types/global";
-import { User } from "../types/user";
+import { User, ServiceResult } from "../types";
 import { getResult } from "../utils";
 import { saveItem, USERLOGGED } from "../utils/storage";
 // import { saveItem, USERLOGGED } from "../utils/storage";
@@ -24,20 +23,22 @@ export const getAllDataService = async () => {
   }
 };
 
-export const authUserService = async (email, password) => {
+export const authUserService = async (email, password, remember) => {
   try {
     const resp = await clientAxios.post(`/auth/`, {
       email,
       password,
     });
     if (resp.data.user) {
-      await saveItem(USERLOGGED, {
-        id: resp.data.user._id,
-        email: resp.data.user.email,
-        name: resp.data.user.name,
-        password: resp.data.user.password,
-      });
-      return getResult(``, true);
+      if (remember) {
+        await saveItem(USERLOGGED, {
+          id: resp.data.user._id,
+          email: resp.data.user.email,
+          name: resp.data.user.name,
+          password: resp.data.user.password,
+        });
+      }
+      return getResult("", true);
     } else {
       return getResult(`El usuario indicado no se encuentra registrado`, false);
     }

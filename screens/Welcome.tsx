@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { Text } from 'react-native';
-import { View } from '../components/Themed';
-import { Container, Header, Content, Button } from 'native-base';
-import { withSafeAreaInsets } from 'react-native-safe-area-context';
+import * as React from "react";
+import { Image, StyleSheet } from "react-native";
+import { Text } from "react-native";
+import { View } from "../components/Themed";
+import { Container, Header, Content, Button } from "native-base";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function WelcomeScreen() {
   return (
@@ -12,13 +12,13 @@ export default function WelcomeScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="/screens/WelcomeScreen.tsx" /> */}
       <View style={styles.content}>
-        <Image source={require('../assets/images/logo.png')} style={{ width: 280, height: 200 }} />
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={{ width: 280, height: 200 }}
+        />
       </View>
       <View style={styles.buttonContainer}>
-        <Button 
-          block primary 
-          style={{ ...styles.button}}
-        >
+        <Button block primary style={{ ...styles.button }}>
           <Text style={styles.buttonText}>Ingresar</Text>
         </Button>
       </View>
@@ -29,41 +29,41 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white'
+    alignItems: "center",
+    justifyContent: "flex-start",
+    backgroundColor: "white",
   },
   content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white'
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonContainer: {
     marginBottom: 40,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    alignItems: "center",
+    justifyContent: "flex-start",
+    backgroundColor: "white",
   },
   button: {
-    width: '90%',
-    backgroundColor: '#5985EB',
-    textAlign: 'center'
+    width: "90%",
+    backgroundColor: "#5985EB",
+    textAlign: "center",
   },
   buttonText: {
-    width: '100%',
+    width: "100%",
     fontSize: 26,
-    textAlign: 'center',
-    fontFamily: 'Roboto',
-    color: 'white'
+    textAlign: "center",
+    fontFamily: "Roboto",
+    color: "white",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });

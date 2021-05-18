@@ -25,9 +25,8 @@ import {
   LoginText,
   ContainerInput,
 } from "./register.styles";
-import { User } from "../../types/user";
 import { createAccountService } from "../../services/userService";
-import { ServiceResult } from "../../types/global";
+import { ServiceResult, User } from "../../types";
 import Modal from "../../components/Modal";
 
 interface SelectedCountry {
@@ -66,7 +65,6 @@ export default function RegisterScreen() {
       password,
     };
     const resp = await createAccountService(user);
-    alert(resp);
     if (resp.isSuccess) {
       setMsg(resp.msg);
       setMsg(`${name} registrado correctamente`);
@@ -79,45 +77,46 @@ export default function RegisterScreen() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      //validar
-      if (
-        name === "" ||
-        surname === "" ||
-        prefix === "" ||
-        phoneNumber === "" ||
-        email === "" ||
-        password === "" ||
-        !acceptTerms
-      ) {
-        // Mostrar un error
-        setLoading(false);
-        setMsg("Todos los campos son obligatorios");
-        return;
-      }
+    // setTimeout(() => {
+    //validar
+    if (
+      name === "" ||
+      surname === "" ||
+      prefix === "" ||
+      phoneNumber === "" ||
+      email === "" ||
+      password === "" ||
+      !acceptTerms
+    ) {
+      // Mostrar un error
+      setLoading(false);
+      setMsg("Todos los campos son obligatorios");
+      return;
+    }
 
-      //password al menos 6 caracteres
-      if (password.length < 6) {
-        setLoading(false);
-        setMsg("El password debe ser de al menos 6 caracteres");
-        return;
-      }
+    //password al menos 6 caracteres
+    if (password.length < 6) {
+      setLoading(false);
+      setMsg("El password debe ser de al menos 6 caracteres");
+      return;
+    }
 
-      //guardar el usuario
-      try {
-        createAccount();
-      } catch (error) {
-        setMsg(error.message.replace("Error:", ""));
-        console.log("erroreee", error);
-      } finally {
-        setLoading(false);
-      }
-    }, 1000);
+    //guardar el usuario
+    try {
+      createAccount();
+    } catch (error) {
+      setMsg(error.message.replace("Error:", ""));
+      console.log("erroreee", error);
+    } finally {
+      setLoading(false);
+    }
+    // }, 1000);
   };
 
   useEffect(() => {
     if (msg) {
       ToastAndroid.show(msg, ToastAndroid.SHORT);
+      setMsg("");
     }
   }, [msg]);
 
@@ -260,7 +259,7 @@ export default function RegisterScreen() {
               }}
             >
               <QuestionText>¿Ya estás registrado?</QuestionText>
-              <LoginText onPress={() => navigation.navigate("Register")}>
+              <LoginText onPress={() => navigation.navigate("Login")}>
                 Ingresá
               </LoginText>
             </View>

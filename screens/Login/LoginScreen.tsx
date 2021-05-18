@@ -6,22 +6,25 @@ import { Checkbox } from "react-native-paper";
 import { Text } from "react-native";
 import { View } from "../../components/Themed";
 import { Button, Form, Item, Input } from "native-base";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useIsFocused } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import * as Google from "expo-google-app-auth";
 import Spinner from "../../components/Spinner";
-import PropTypes from "prop-types";
 import { CustomContainer, ButtonContainer, Title } from "./login.styles";
 import { authUserService } from "../../services/userService";
 import * as GoogleSignIn from "expo-google-sign-in";
+import { USERLOGGED } from "../../types";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
 //   User as GoogleUser,
 // } from "@react-native-community/google-signin";
 import { State } from "react-native-gesture-handler";
+import { getItem, saveItem } from "../../utils/storage";
 
 const AND_CLIENT_ID =
+  "224762899944-nj3j84lqgahqm0fmtcdb4vbrae0k1v6c.apps.googleusercontent.com";
+const WEB_CLIENT_ID =
   "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com";
 async function signInWithGoogleAsync() {
   try {
@@ -29,6 +32,7 @@ async function signInWithGoogleAsync() {
       // behavior: "web",
       // iosClientId: AND_CLIENT_ID,
       androidClientId: AND_CLIENT_ID,
+      // webClientId: WEB_CLIENT_ID,
       // redirectUrl: "/sarasa",
       scopes: ["profile", "email"],
     });
@@ -50,21 +54,24 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
 
-  const [loginGoogleLoaded, setLoginGoogleLoaded] = useState<boolean>(false);
+  // const [loginGoogleLoaded, setLoginGoogleLoaded] = useState<boolean>(false);
   // const [userGoogleInfo, setUserGoogleInfo] = useState<GoogleUser>();
 
   const [userGoogle, setUserGoogle] =
     useState<GoogleSignIn.GoogleUser | null>();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     // initAsync();
+    if (isFocused) {
+      isUserCatched();
+    }
     // GoogleSignin.configure({
-    //   webClientId:
-    //     "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
+    //   webClientId: WEB_CLIENT_ID,
     //   offlineAccess: true,
     // });
-  }, []);
+  }, [isFocused]);
 
   // const signIn = async () => {
   //   try {
@@ -80,16 +87,15 @@ export default function LoginScreen() {
   useEffect(() => {
     if (msg) {
       ToastAndroid.show(msg, ToastAndroid.SHORT);
+      setMsg("");
     }
   }, [msg]);
 
   // const initAsync = async () => {
   //   await GoogleSignIn.initAsync({
   //     // You may ommit the clientId when the firebase `googleServicesFile` is configured
-  //     clientId:
-  //       "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
-  //     webClientId:
-  //       "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com",
+  //     clientId: AND_CLIENT_ID,
+  //     webClientId: WEB_CLIENT_ID,
   //   });
   //   _syncUserWithStateAsync();
   // };
@@ -112,7 +118,8 @@ export default function LoginScreen() {
         _syncUserWithStateAsync();
       }
     } catch ({ message }) {
-      alert("login: Error:" + message);
+      console.log(message);
+      // alert("login: Error:" + message);
     }
   };
 
@@ -128,12 +135,22 @@ export default function LoginScreen() {
     }
   };
 
+  const isUserCatched = async () => {
+    const user = await getItem(USERLOGGED);
+    if (user) {
+      console.log("usuario cacheado");
+      navigation.navigate("Menu");
+    } else {
+      console.log("usuario no cacheado");
+    }
+  };
+
   const login = async () => {
-    const resp = await authUserService(email, password);
+    const resp = await authUserService(email, password, rememberMe);
     if (resp.isSuccess) {
       setLoading(false);
       console.log("Iniciando sesión");
-      navigation.navigate("Home");
+      navigation.navigate("Menu");
     } else {
       setMsg(resp.msg);
       setLoading(false);
@@ -233,7 +250,7 @@ export default function LoginScreen() {
             alignItems: "center",
             width: "100%",
             flex: 1,
-            marginBottom: 60,
+            marginBottom: 55,
           }}
         >
           <View style={styles.checkboxContainer}>

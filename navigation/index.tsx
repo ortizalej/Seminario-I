@@ -11,7 +11,7 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../screens/Home/HomeScreen";
 import LoginScreen from "../screens/Login/LoginScreen";
 import SplashScreen from "../screens/SplashScreen";
 
@@ -20,6 +20,7 @@ import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 import RegisterScreen from "../screens/Register/RegisterScreen";
+import MenuScreen from "../screens/Menu/MenuDrawer";
 
 export default function Navigation({
   colorScheme,
@@ -57,6 +58,11 @@ function RootNavigator() {
         name="Register"
         component={RegisterScreen}
         options={{ title: "Register Screen" }}
+      />
+      <Stack.Screen
+        name="Menu"
+        component={MenuScreen}
+        options={{ title: "Menu Vertical" }}
       />
       <Stack.Screen
         name="Home"
