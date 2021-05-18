@@ -18,7 +18,12 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.passenger.expo.googlesignin"
+      "bundleIdentifier": "com.passenger.expo.googlesignin",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {

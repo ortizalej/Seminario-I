@@ -29,7 +29,7 @@ const globalStyles = StyleSheet.create({
   input: {
     // backgroundColor: "#E8E8E8",
     marginBottom: 20,
-    width: "80%",
+    // width: "80%",
     borderColor: "#E8E8E8",
     borderWidth: 1,
   },
