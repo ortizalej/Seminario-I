@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Image, StyleSheet } from "react-native";
-import { Text } from "react-native";
 import { View } from "../../components/Themed";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { Item } from "native-base";
+import { Item, Container, Header, Content, Card, CardItem, Body, Text, Badge } from "native-base";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
@@ -19,6 +18,7 @@ export default function HomeScreen() {
     latitude: 0,
     longitude: 0,
   });
+  const [haveRoute, setHaveRoute] = useState<String>("none")
   const [latitudeDeltaOrigen, setLatitudeDeltaOrigen] =
     useState<number>(0.0922);
   const [longitudeDeltaOrigen, setLongitudeDeltaOrigen] =
@@ -49,9 +49,12 @@ export default function HomeScreen() {
           origin={geolocalizationOrigen}
           destination={geolocalizationDestino}
           apikey="AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4"
+          onReady={result => {
+            setHaveRoute("flex");
+          }}
         />
       </MapView>
-      <Item regular>
+      <Item regular style={{ marginTop: 200 }}>
         <GooglePlacesAutocomplete
           placeholder="Origen"
           onPress={(data, details = null) => {
@@ -99,6 +102,25 @@ export default function HomeScreen() {
           styles={{ listView: { height: 100 } }}
         />
       </Item>
+
+      <Card >
+        <CardItem>
+          <Badge style={{ backgroundColor: '#EDEDED', width: 300, height: 80 }}>
+            <Image
+              source={require("../../assets/images/Cabify.png")}
+              style={{ width: 50, height: 50, }}
+            />
+          </Badge>
+        </CardItem>
+        <CardItem>
+          <Badge style={{ backgroundColor: '#EDEDED', width: 300, height: 80 }}>
+            <Image
+              source={require("../../assets/images/Uber.png")}
+              style={{ width: 50, height: 50 }}
+            />
+          </Badge>
+        </CardItem>
+      </Card>
     </View>
   );
 }
