@@ -3,11 +3,22 @@ import { Image, StyleSheet } from "react-native";
 import { View } from "../../components/Themed";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { Item, Container, Header, Content, Card, CardItem, Body, Text, Badge } from "native-base";
+import {
+  Item,
+  Container,
+  Header,
+  Content,
+  Card,
+  CardItem,
+  Body,
+  Text,
+  Badge,
+} from "native-base";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
 import TopBar from "../../components/TopBar";
+import OptionTravelCard from "../../components/OptionTravelCard";
 
 export default function HomeScreen() {
   const [geolocalizationOrigen, setgeolocalizationOrigen] = useState({
@@ -18,7 +29,7 @@ export default function HomeScreen() {
     latitude: 0,
     longitude: 0,
   });
-  const [haveRoute, setHaveRoute] = useState<String>("none")
+  const [haveRoute, setHaveRoute] = useState<String>("none");
   const [latitudeDeltaOrigen, setLatitudeDeltaOrigen] =
     useState<number>(0.0922);
   const [longitudeDeltaOrigen, setLongitudeDeltaOrigen] =
@@ -49,7 +60,7 @@ export default function HomeScreen() {
           origin={geolocalizationOrigen}
           destination={geolocalizationDestino}
           apikey="AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4"
-          onReady={result => {
+          onReady={(result) => {
             setHaveRoute("flex");
           }}
         />
@@ -102,25 +113,27 @@ export default function HomeScreen() {
           styles={{ listView: { height: 100 } }}
         />
       </Item>
-
-      <Card >
-        <CardItem>
-          <Badge style={{ backgroundColor: '#EDEDED', width: 300, height: 80 }}>
-            <Image
-              source={require("../../assets/images/Cabify.png")}
-              style={{ width: 50, height: 50, }}
+      {geolocalizationOrigen &&
+        geolocalizationDestino &&
+        geolocalizationOrigen.latitude !== 0 &&
+        geolocalizationOrigen.longitude !== 0 &&
+        geolocalizationDestino.latitude !== 0 &&
+        geolocalizationDestino.latitude !== 0 && (
+          <Card>
+            <OptionTravelCard
+              title="Cabify"
+              imgUri={require("../../assets/images/cabify2.png")}
+              frequenceMinutes={20}
+              price={927.02}
             />
-          </Badge>
-        </CardItem>
-        <CardItem>
-          <Badge style={{ backgroundColor: '#EDEDED', width: 300, height: 80 }}>
-            <Image
-              source={require("../../assets/images/Uber.png")}
-              style={{ width: 50, height: 50 }}
+            <OptionTravelCard
+              title="Uber"
+              imgUri={require("../../assets/images/Uber.png")}
+              frequenceMinutes={18}
+              price={984.34}
             />
-          </Badge>
-        </CardItem>
-      </Card>
+          </Card>
+        )}
     </View>
   );
 }

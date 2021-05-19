@@ -298,7 +298,7 @@ export default function LoginScreen() {
               source={require("../../assets/images/googleIcon.png")}
               style={{ width: 34, height: 34, marginRight: 20 }}
             />
-            <Text style={globalStyles.buttonText}>Continúa con Google</Text>
+            <Text style={globalStyles.buttonText}>Continuar con Google</Text>
           </Button>
           {/* <GoogleSigninButton
             onPress={() => signIn()}
