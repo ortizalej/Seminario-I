@@ -11,6 +11,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import NavigationDrawerStructure from "./NavigationDrawerStructure";
 import HomeScreen from "../Home/HomeScreen";
 import CloseSessionScreen from "../CloseSession/CloseSession";
+import UserScreen from "../User/UserScreen";
 
 const MenuScreen = () => {
   const Drawer = createDrawerNavigator();
@@ -32,6 +33,17 @@ const MenuScreen = () => {
           ),
         }}
         component={HomeStack}
+      />
+      <Drawer.Screen
+        name="Configuración"
+        options={{
+          drawerLabel: "Configuración",
+          drawerIcon: () => (
+            <AntDesign name="user" size={25} color={"#5985EB"} />
+          ),
+          headerTitleStyle: { marginTop: 20 },
+        }}
+        component={userStack}
       />
       <Drawer.Screen
         // style={{ marginTop: 20 }}
@@ -99,7 +111,7 @@ const closeSessionStack = ({ navigation }) => {
             <NavigationDrawerStructure navigationProps={navigation} />
           ),
           headerStyle: {
-            backgroundColor: "#5985EB",
+            backgroundColor: "#FFFFFF",
             display: "none",
           },
           headerTintColor: "#fff",
@@ -145,4 +157,29 @@ function HomeTabsStack() {
   );
 }
 
+const userStack = ({ navigation }) => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator initialRouteName="UserScreen">
+      <Stack.Screen
+        name="UserScreen"
+        component={UserScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <NavigationDrawerStructure navigationProps={navigation} />
+          ),
+          headerStyle: {
+            backgroundColor: "#FFFFFF",
+            display: "none",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 export default MenuScreen;

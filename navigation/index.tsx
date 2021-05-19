@@ -21,6 +21,8 @@ import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 import RegisterScreen from "../screens/Register/RegisterScreen";
 import MenuScreen from "../screens/Menu/MenuDrawer";
+import UserScreen from "../screens/User/UserScreen";
+import TravelsScreen from "../screens/Travels/TravelsScreen";
 
 export default function Navigation({
   colorScheme,
@@ -68,6 +70,16 @@ function RootNavigator() {
         name="Home"
         component={HomeScreen}
         options={{ title: "Homee!" }}
+      />
+      <Stack.Screen
+        name="Travels"
+        component={TravelsScreen}
+        options={{ title: "Travels Screen" }}
+      />
+      <Stack.Screen
+        name="User"
+        component={UserScreen}
+        options={{ title: "User Screen" }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen
