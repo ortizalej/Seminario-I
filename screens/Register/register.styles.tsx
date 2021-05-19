@@ -33,7 +33,7 @@ export const ButtonContainer = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
+  font-size: 28px;
   font-weight: bold;
   color: ${(props) => props.theme.greyTextColor};
   margin-bottom: 32px;
@@ -61,7 +61,7 @@ export const LoginText = styled.Text`
 
 export const ContainerInput = styled(Item)`
   color: ${(props) => props.theme.lightGreyTextColor};
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-width: 1px;
   margin-left: 5px;
   margin-right: 5px;

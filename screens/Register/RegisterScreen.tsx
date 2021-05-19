@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "react-native-paper";
 import { Text } from "react-native";
 import { View } from "../../components/Themed";
-import { Button, Form, Item, Input } from "native-base";
+import { Button, Form, Item, Input, Label } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
@@ -148,13 +148,15 @@ export default function RegisterScreen() {
           >
             <Form style={{ width: "90%" }}>
               <InputContainer>
-                <ContainerInput regular style={{ flex: 1 }}>
+                <ContainerInput floatingLabel  style={{ flex: 1 }}>
+                  <Label>Nombre</Label>
                   <Input
                     placeholder="Nombre"
                     onChangeText={(val) => setName(val)}
                   />
                 </ContainerInput>
-                <ContainerInput regular style={{ flex: 1 }}>
+                <ContainerInput floatingLabel style={{ flex: 1 }}>
+                <Label>Apellido</Label>
                   <Input
                     placeholder="Apellido"
                     onChangeText={(val) => setSurname(val)}
@@ -163,7 +165,8 @@ export default function RegisterScreen() {
               </InputContainer>
 
               <InputContainer>
-                <ContainerInput regular style={{ flex: 1 }}>
+                <ContainerInput floatingLabel style={{ flex: 1 }}>
+                <Label>Prefijo</Label>
                   <Input
                     placeholder="Prefijo"
                     onFocus={() => setVisible(true)}
@@ -175,7 +178,8 @@ export default function RegisterScreen() {
                     setSelectedCountry={setSelectedCountry}
                   />
                 </ContainerInput>
-                <ContainerInput regular style={{ width: "70%" }}>
+                <ContainerInput floatingLabel style={{ width: "70%" }}>
+                <Label>Teléfono</Label>
                   <Input
                     keyboardType="numeric"
                     placeholder="Teléfono"
@@ -183,21 +187,27 @@ export default function RegisterScreen() {
                   />
                 </ContainerInput>
               </InputContainer>
-
-              <ContainerInput regular last style={{ width: "97%" }}>
+              <InputContainer>
+                <ContainerInput floatingLabel last style={{ width: "97%" }}>
+                <Label>Email</Label>
                 <Input
                   keyboardType="email-address"
                   placeholder="Email"
                   onChangeText={(val) => setEmail(val)}
                 />
               </ContainerInput>
-              <ContainerInput regular last style={{ width: "97%" }}>
+              
+              </InputContainer>
+              <InputContainer>
+                <ContainerInput floatingLabel last style={{ width: "97%" }}>
+                <Label>Contraseña</Label>
                 <Input
                   secureTextEntry={true}
                   placeholder="Contraseña"
                   onChangeText={(val) => setPassword(val)}
                 />
-              </ContainerInput>
+                </ContainerInput>
+                </InputContainer>
               <View style={styles.checkboxContainer}>
                 {/* <CheckBox
                   value={acceptTerms}
@@ -220,7 +230,7 @@ export default function RegisterScreen() {
                     }}
                     onPress={() => setShowTerms(!showTerms)}
                   >
-                    terminos y condiciones
+                    términos y condiciones
                   </Text>
                 </Text>
               </View>
