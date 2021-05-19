@@ -133,6 +133,7 @@ export default function LoginScreen() {
   };
 
   const isUserCatched = async () => {
+
     const user = await getItem(USERLOGGED);
     if (user) {
       console.log("usuario cacheado");
