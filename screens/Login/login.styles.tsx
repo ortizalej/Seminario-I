@@ -17,9 +17,9 @@ export const ButtonContainer = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 20px;
+  font-size: 28px;
   font-weight: bold;
-  color: ${(props) => props.theme.textColor};
-  margin-bottom: 12px
+  color: ${(props) => props.theme.greyTextColor};
+  margin-bottom: 20px
   marginTop: 0
 `;

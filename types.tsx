@@ -40,6 +40,7 @@ export interface User {
   prefix: string;
   email: string;
   password: string;
+  image?: string;
 }
 
 // Constantes para Async Storage

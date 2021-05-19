@@ -148,7 +148,7 @@ export default function RegisterScreen() {
           >
             <Form style={{ width: "90%" }}>
               <InputContainer>
-                <ContainerInput floatingLabel  style={{ flex: 1 }}>
+                <ContainerInput floatingLabel style={{ flex: 1 }}>
                   <Label>Nombre</Label>
                   <Input
                     placeholder="Nombre"
@@ -156,7 +156,7 @@ export default function RegisterScreen() {
                   />
                 </ContainerInput>
                 <ContainerInput floatingLabel style={{ flex: 1 }}>
-                <Label>Apellido</Label>
+                  <Label>Apellido</Label>
                   <Input
                     placeholder="Apellido"
                     onChangeText={(val) => setSurname(val)}
@@ -165,8 +165,7 @@ export default function RegisterScreen() {
               </InputContainer>
 
               <InputContainer>
-                <ContainerInput floatingLabel style={{ flex: 1 }}>
-                <Label>Prefijo</Label>
+                <ContainerInput style={{ flex: 1 }}>
                   <Input
                     placeholder="Prefijo"
                     onFocus={() => setVisible(true)}
@@ -179,7 +178,7 @@ export default function RegisterScreen() {
                   />
                 </ContainerInput>
                 <ContainerInput floatingLabel style={{ width: "70%" }}>
-                <Label>Teléfono</Label>
+                  <Label>Teléfono</Label>
                   <Input
                     keyboardType="numeric"
                     placeholder="Teléfono"
@@ -188,26 +187,25 @@ export default function RegisterScreen() {
                 </ContainerInput>
               </InputContainer>
               <InputContainer>
-                <ContainerInput floatingLabel last style={{ width: "97%" }}>
-                <Label>Email</Label>
-                <Input
-                  keyboardType="email-address"
-                  placeholder="Email"
-                  onChangeText={(val) => setEmail(val)}
-                />
-              </ContainerInput>
-              
+                <ContainerInput floatingLabel style={{ width: "97%" }}>
+                  <Label>Email</Label>
+                  <Input
+                    keyboardType="email-address"
+                    placeholder="Email"
+                    onChangeText={(val) => setEmail(val)}
+                  />
+                </ContainerInput>
               </InputContainer>
               <InputContainer>
-                <ContainerInput floatingLabel last style={{ width: "97%" }}>
-                <Label>Contraseña</Label>
-                <Input
-                  secureTextEntry={true}
-                  placeholder="Contraseña"
-                  onChangeText={(val) => setPassword(val)}
-                />
+                <ContainerInput floatingLabel style={{ width: "97%" }}>
+                  <Label>Contraseña</Label>
+                  <Input
+                    secureTextEntry={true}
+                    placeholder="Contraseña"
+                    onChangeText={(val) => setPassword(val)}
+                  />
                 </ContainerInput>
-                </InputContainer>
+              </InputContainer>
               <View style={styles.checkboxContainer}>
                 {/* <CheckBox
                   value={acceptTerms}
@@ -247,7 +245,7 @@ export default function RegisterScreen() {
               width: "100%",
               alignItems: "center",
               justifyContent: "center",
-              marginTop: 60,
+              marginTop: 20,
             }}
           >
             <ButtonContainer>
@@ -266,6 +264,7 @@ export default function RegisterScreen() {
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
+                // marginBottom: -100
               }}
             >
               <QuestionText>¿Ya estás registrado?</QuestionText>

@@ -133,7 +133,6 @@ export default function LoginScreen() {
   };
 
   const isUserCatched = async () => {
-
     const user = await getItem(USERLOGGED);
     if (user) {
       console.log("usuario cacheado");
@@ -202,7 +201,7 @@ export default function LoginScreen() {
           source={require("../../assets/images/logo.png")}
           style={{ width: 280, height: 200, marginBottom: -20 }}
         />
-        <Title style={styles.title}>Iniciar Sesión</Title>
+        <Title>Iniciar Sesión</Title>
       </View>
       <View
         style={{
@@ -220,11 +219,11 @@ export default function LoginScreen() {
             justifyContent: "center",
           }}
         >
-          <Form style={{marginTop: 30}}>
+          <Form style={{ marginTop: 10 }}>
             <Item
               floatingLabel
               last
-              style={[globalStyles.input, { width: "80%" }]}
+              style={[globalStyles.input, { width: "80%", marginBottom: 0 }]}
             >
               <Label>Email</Label>
               <Input
@@ -234,7 +233,7 @@ export default function LoginScreen() {
               />
             </Item>
             <Item floatingLabel last style={globalStyles.input}>
-            <Label>Contraseña</Label>
+              <Label>Contraseña</Label>
               <Input
                 secureTextEntry={true}
                 placeholder="Contraseña"
@@ -343,13 +342,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#656771",
-    marginBottom: 20,
-    marginTop: 0,
   },
   text: {
     fontSize: 20,

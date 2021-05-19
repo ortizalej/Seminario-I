@@ -11,7 +11,7 @@ import {
 import { Checkbox } from "react-native-paper";
 import { Text } from "react-native";
 import { View } from "../../components/Themed";
-import { Button, Form, Item, Input } from "native-base";
+import { Button, Form, Item, Input, Label } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
@@ -27,13 +27,18 @@ import { createAccountService } from "../../services/userService";
 import { ServiceResult, User } from "../../types";
 import Modal from "../../components/Modal";
 import * as ImagePicker from "expo-image-picker";
-
+import useUserLogged from "../../hooks/useUserLogged";
 interface SelectedCountry {
   name: string;
   flag: string;
   code: string;
   dial_code: string;
 }
+const getUser = async () => {
+  const user = await useUserLogged();
+  return user;
+};
+
 export default function UserScreen() {
   // const phone = useRef("");
   const [name, setName] = useState<string>("");
@@ -46,11 +51,13 @@ export default function UserScreen() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [showTerms, setShowTerms] = useState<boolean>(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string>();
 
   const [msg, setMsg] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<SelectedCountry>();
   const [visible, setVisible] = useState<boolean>(false);
+
+  const [user, setUser] = useState<User>();
 
   const navigation = useNavigation();
 
@@ -64,7 +71,23 @@ export default function UserScreen() {
         }
       }
     })();
+    const getUser = async () => {
+      const usr = await useUserLogged();
+      setUser(usr);
+    };
+    getUser();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setSurname(user.surname);
+      setEmail(user.email);
+      setPassword(user.password);
+      setPhoneNumber(user.phoneNumber);
+      user.image && setImage(user.image);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (msg) {
@@ -90,8 +113,7 @@ export default function UserScreen() {
     console.log(result);
 
     if (!result.cancelled) {
-      alert(result.uri);
-      // setImage(result.uri);
+      setImage(result.uri);
     }
   };
 
@@ -112,52 +134,76 @@ export default function UserScreen() {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                marginTop: 50,
+                marginTop: 20,
               }}
             >
-              <Image
-                source={require("../../assets/images/logo.png")}
+              <View
                 style={{
-                  width: 150,
-                  height: 150,
-                  borderRadius: 150 / 2,
-                  backgroundColor: "red",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "flex-end",
                 }}
-              />
-              {/* <Item
-                inlineLabel
-                last
-                style={[globalStyles.input, { width: "80%" }]}
               >
                 <Image
-                  source={require("../../assets/images/logo.png")}
-                  style={{ width: 280, height: 200 }}
+                  source={
+                    image
+                      ? { uri: image }
+                      : require("../../assets/images/laMona.jpg")
+                  }
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 150 / 2,
+                  }}
                 />
-              </Item> */}
+                <Button
+                  block
+                  primary
+                  style={[
+                    {
+                      backgroundColor: "#5985EB",
+                      marginTop: 3,
+                      marginLeft: 3,
+                      borderRadius: 5,
+                      height: 32,
+                      width: 140,
+                      alignSelf: "center",
+                    },
+                  ]}
+                  onPress={() => pickImage()}
+                >
+                  <Text style={{ fontSize: 20, color: "#ffffff" }}>
+                    {image ? "Actualizar imagen" : "Agregar Imagen"}
+                  </Text>
+                </Button>
+              </View>
               <Item
-                inlineLabel
-                last
-                style={[globalStyles.input, { width: "90%" }]}
+                floatingLabel
+                style={[globalStyles.input, { width: "90%", marginBottom: 0 }]}
               >
+                <Label>Nombre</Label>
                 <Input
                   placeholder="Nombre"
+                  value={name}
                   style={{ width: "100%" }}
                   onChangeText={(texto) => setName(texto)}
                 />
               </Item>
               <Item
-                inlineLabel
-                last
-                style={[globalStyles.input, { width: "90%" }]}
+                floatingLabel
+                style={[globalStyles.input, { width: "90%", marginBottom: 0 }]}
               >
+                <Label>Apellido</Label>
                 <Input
                   placeholder="Apellido"
+                  value={surname}
                   style={{ width: "100%" }}
                   onChangeText={(texto) => setSurname(texto)}
                 />
               </Item>
-              <InputContainer>
-                <ContainerInput inlineLabel style={{ flex: 1 }}>
+              <InputContainer style={{ marginBottom: 0 }}>
+                <ContainerInput floatingLabel style={{ flex: 1 }}>
+                  <Label>Prefijo</Label>
                   <Input
                     placeholder="Prefijo"
                     onFocus={() => setVisible(true)}
@@ -169,32 +215,36 @@ export default function UserScreen() {
                     setSelectedCountry={setSelectedCountry}
                   />
                 </ContainerInput>
-                <ContainerInput inlineLabel style={{ width: "70%" }}>
+                <ContainerInput floatingLabel style={{ width: "70%" }}>
+                  <Label>Teléfono</Label>
                   <Input
                     keyboardType="numeric"
                     placeholder="Teléfono"
+                    value={phoneNumber}
                     onChangeText={(val) => setPhoneNumber(val)}
                   />
                 </ContainerInput>
               </InputContainer>
               <Item
-                inlineLabel
-                last
-                style={[globalStyles.input, { width: "90%" }]}
+                floatingLabel
+                style={[globalStyles.input, { width: "90%", marginBottom: 0 }]}
               >
+                <Label>Email</Label>
                 <Input
                   placeholder="Email"
+                  value={email}
                   style={{ width: "90%" }}
                   onChangeText={(texto) => setEmail(texto)}
                 />
               </Item>
               <Item
-                inlineLabel
-                last
-                style={(globalStyles.input, { width: "90%" })}
+                floatingLabel
+                style={(globalStyles.input, { width: "90%", marginBottom: 0 })}
               >
+                <Label>Contraseña</Label>
                 <Input
                   secureTextEntry={true}
+                  value={password}
                   placeholder="Contraseña"
                   onChangeText={(texto) => setPassword(texto)}
                 />

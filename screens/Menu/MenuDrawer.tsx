@@ -34,7 +34,7 @@ const MenuScreen = () => {
         }}
         component={HomeStack}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Configuración"
         options={{
           drawerLabel: "Configuración",
@@ -44,7 +44,7 @@ const MenuScreen = () => {
           headerTitleStyle: { marginTop: 20 },
         }}
         component={userStack}
-      />
+      /> */}
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"
@@ -70,18 +70,7 @@ const HomeStack = ({ navigation }) => {
         name="Passenger"
         component={HomeTabsStack}
         options={({ route }) => ({
-          headerTitle: () => (
-            <Image
-              source={require("../../assets/images/logo.png")}
-              style={{
-                width: 220,
-                height: 70,
-                marginLeft: 15,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-          ),
+          headerTitle: () => <LogoImage />,
           headerLeft: () => (
             <NavigationDrawerStructure navigationProps={navigation} />
           ),
@@ -110,6 +99,7 @@ const closeSessionStack = ({ navigation }) => {
           headerLeft: () => (
             <NavigationDrawerStructure navigationProps={navigation} />
           ),
+          headerTitle: () => <LogoImage />,
           headerStyle: {
             backgroundColor: "#FFFFFF",
             display: "none",
@@ -169,6 +159,7 @@ const userStack = ({ navigation }) => {
           headerLeft: () => (
             <NavigationDrawerStructure navigationProps={navigation} />
           ),
+          headerTitle: () => <LogoImage />,
           headerStyle: {
             backgroundColor: "#FFFFFF",
             display: "none",
@@ -182,4 +173,17 @@ const userStack = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
+
+const LogoImage = () => (
+  <Image
+    source={require("../../assets/images/logo.png")}
+    style={{
+      width: 220,
+      height: 70,
+      marginLeft: 15,
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  />
+);
 export default MenuScreen;
