@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, ToastAndroid } from "react-native";
-
-import { TextInput } from "react-native-paper";
+import { Image, StyleSheet, ToastAndroid, Text } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { Text } from "react-native";
 import { View } from "../../components/Themed";
-import { Button, Form, Item, Input } from "native-base";
+import { Button, Form, Item, Input, Label } from "native-base";
 import { useNavigation, useIsFocused } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import * as Google from "expo-google-app-auth";
@@ -222,19 +219,21 @@ export default function LoginScreen() {
             justifyContent: "center",
           }}
         >
-          <Form>
+          <Form style={{marginTop: 30}}>
             <Item
-              inlineLabel
+              floatingLabel
               last
               style={[globalStyles.input, { width: "80%" }]}
             >
+              <Label>Email</Label>
               <Input
                 placeholder="Email"
                 style={{ width: "100%" }}
                 onChangeText={(texto) => setEmail(texto)}
               />
             </Item>
-            <Item inlineLabel last style={globalStyles.input}>
+            <Item floatingLabel last style={globalStyles.input}>
+            <Label>Contraseña</Label>
               <Input
                 secureTextEntry={true}
                 placeholder="Contraseña"
@@ -250,7 +249,7 @@ export default function LoginScreen() {
             alignItems: "center",
             width: "100%",
             flex: 1,
-            marginBottom: 55,
+            marginBottom: 25,
           }}
         >
           <View style={styles.checkboxContainer}>
@@ -348,7 +347,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#656771",
-    marginBottom: 12,
+    marginBottom: 20,
     marginTop: 0,
   },
   text: {
