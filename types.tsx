@@ -41,6 +41,7 @@ export interface User {
   email: string;
   password: string;
   image?: string;
+  remembered: boolean;
 }
 
 // Constantes para Async Storage

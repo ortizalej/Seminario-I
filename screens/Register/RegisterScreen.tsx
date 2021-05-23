@@ -63,6 +63,7 @@ export default function RegisterScreen() {
       prefix,
       email,
       password,
+      remembered: false,
     };
     const resp = await createAccountService(user);
     if (resp.isSuccess) {
@@ -106,7 +107,7 @@ export default function RegisterScreen() {
       createAccount();
     } catch (error) {
       setMsg(error.message.replace("Error:", ""));
-      console.log("erroreee", error);
+      console.log("errorr", error);
     } finally {
       setLoading(false);
     }

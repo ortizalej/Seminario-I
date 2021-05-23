@@ -10,7 +10,7 @@ import Spinner from "../../components/Spinner";
 import { CustomContainer, ButtonContainer, Title } from "./login.styles";
 import { authUserService } from "../../services/userService";
 import * as GoogleSignIn from "expo-google-sign-in";
-import { USERLOGGED } from "../../types";
+import { User, USERLOGGED } from "../../types";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -134,19 +134,24 @@ export default function LoginScreen() {
 
   const isUserCatched = async () => {
     const user = await getItem(USERLOGGED);
-    if (user) {
-      console.log("usuario cacheado");
+    if (user && user.remembered) {
+      // console.log("usuario cacheado", user);
       navigation.navigate("Menu");
-    } else {
-      console.log("usuario no cacheado");
     }
   };
 
   const login = async () => {
-    const resp = await authUserService(email, password, rememberMe);
+    const resp = await authUserService(email, password);
+    console.log("resppp", resp);
     if (resp.isSuccess) {
+      await saveItem(USERLOGGED, {
+        id: resp.msg._id,
+        email: resp.msg.email,
+        name: resp.msg.name,
+        password: resp.msg.password,
+        remembered: rememberMe,
+      });
       setLoading(false);
-      console.log("Iniciando sesión");
       navigation.navigate("Menu");
     } else {
       setMsg(resp.msg);
@@ -178,10 +183,8 @@ export default function LoginScreen() {
   //   try {
   //     // await GoogleSignin.hasPlayServices();
   //     // const userInfo = await GoogleSignin.signIn();
-  //     // console.log("GoogleUser", userInfo);
   //     // setUserGoogle(userInfo);
   //   } catch (error) {
-  //     console.log("errorrrrr", error);
   //     // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
   //     //   // user cancelled the login flow
   //     // } else if (error.code === statusCodes.IN_PROGRESS) {

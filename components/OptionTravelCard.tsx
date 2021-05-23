@@ -18,12 +18,12 @@ const OptionTravelCard: FC<OptionTravelCardProps> = ({
   price,
 }) => {
   return (
-    <CardItem>
+    <CardItem style={{ paddingBottom: 10 }}>
       <Badge
         style={{
           backgroundColor: "#EDEDED",
-          width: 300,
-          height: 80,
+          width: "100%",
+          height: 70,
         }}
       >
         <View

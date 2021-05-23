@@ -8,10 +8,8 @@ import { saveItem, USERLOGGED } from "../utils/storage";
 
 export const getAllDataService = async () => {
   try {
-    const {
-      user: { email },
-    } = await useUserLogged();
-    console.log(email);
+    const { email } = await useUserLogged();
+    alert(email);
     const resp = await clientAxios.get(`/users/getAllData/${email}`);
     if (resp.data) {
       return getResult(resp.data, true);
@@ -23,22 +21,14 @@ export const getAllDataService = async () => {
   }
 };
 
-export const authUserService = async (email, password, remember) => {
+export const authUserService = async (email, password) => {
   try {
     const resp = await clientAxios.post(`/auth/`, {
       email,
       password,
     });
     if (resp.data.user) {
-      if (remember) {
-        await saveItem(USERLOGGED, {
-          id: resp.data.user._id,
-          email: resp.data.user.email,
-          name: resp.data.user.name,
-          password: resp.data.user.password,
-        });
-      }
-      return getResult("", true);
+      return getResult(resp.data.user, true);
     } else {
       return getResult(`El usuario indicado no se encuentra registrado`, false);
     }
@@ -63,7 +53,6 @@ export const createAccountService = async (
   user: User
 ): Promise<ServiceResult<any>> => {
   try {
-    console.log("user", user);
     const resp = await clientAxios.post(`/users/`, user);
     if (resp && resp.data) {
       return getResult(
@@ -71,7 +60,7 @@ export const createAccountService = async (
         true
       );
     } else {
-      return getResult();
+      return getResult("");
     }
   } catch (error) {
     return getResult(error.response.data.errores[0].msg, false);

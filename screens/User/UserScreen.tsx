@@ -110,8 +110,6 @@ export default function UserScreen() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -255,7 +253,7 @@ export default function UserScreen() {
                 block
                 primary
                 style={[globalStyles.button, {}]}
-                onPress={() => console.log("sarasa")}
+                onPress={() => alert("sarasa")}
               >
                 <Text style={globalStyles.buttonText}>Guardar</Text>
               </Button>
