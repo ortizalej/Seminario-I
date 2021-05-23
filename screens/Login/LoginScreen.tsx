@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, ToastAndroid, Text } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { View } from "../../components/Themed";
-import { Button, Form, Item, Input, Label } from "native-base";
+import { Button, Form, Item, Input, Label, Icon } from "native-base";
 import { useNavigation, useIsFocused } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import * as Google from "expo-google-app-auth";
@@ -47,6 +47,7 @@ async function signInWithGoogleAsync() {
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
@@ -148,7 +149,7 @@ export default function LoginScreen() {
         id: resp.msg._id,
         email: resp.msg.email,
         name: resp.msg.name,
-        password: resp.msg.password,
+        password: password,
         remembered: rememberMe,
       });
       setLoading(false);
@@ -238,9 +239,14 @@ export default function LoginScreen() {
             <Item floatingLabel last style={globalStyles.input}>
               <Label>Contraseña</Label>
               <Input
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 placeholder="Contraseña"
                 onChangeText={(texto) => setPassword(texto)}
+              />
+              <Icon
+                style={{ fontSize: 22 }}
+                name={!showPassword ? "eye" : "eye-off"}
+                onPress={() => setShowPassword((pass) => !pass)}
               />
             </Item>
           </Form>

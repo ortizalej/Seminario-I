@@ -235,10 +235,11 @@ const ItemFull = ({
   address,
 }) => {
   const originRef = useRef(null);
+  const destinoRef = useRef(null);
 
   useEffect(() => {
-    if (originRef && originRef.current) {
-      (originRef as any).current.focus();
+    if (destinoRef && destinoRef.current) {
+      (destinoRef as any).current.focus();
     }
   }, []);
   useEffect(() => {
@@ -299,6 +300,7 @@ const ItemFull = ({
         }}
       >
         <GooglePlacesAutocomplete
+          ref={destinoRef}
           placeholder="Destino"
           onPress={(data, details = null) => {
             console.log("DATASS", details?.geometry.location);

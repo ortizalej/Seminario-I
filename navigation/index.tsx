@@ -75,12 +75,12 @@ function RootNavigator() {
         name="Travels"
         component={TravelsScreen}
         options={{ title: "Travels Screen" }}
-      />
+      /> */}
       <Stack.Screen
         name="User"
         component={UserScreen}
         options={{ title: "User Screen" }}
-      /> */}
+      />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen
         name="NotFound"

@@ -34,7 +34,7 @@ const MenuScreen = () => {
         }}
         component={HomeStack}
       />
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="Configuración"
         options={{
           drawerLabel: "Configuración",
@@ -44,7 +44,7 @@ const MenuScreen = () => {
           headerTitleStyle: { marginTop: 20 },
         }}
         component={userStack}
-      /> */}
+      />
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"

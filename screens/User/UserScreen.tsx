@@ -11,7 +11,7 @@ import {
 import { Checkbox } from "react-native-paper";
 import { Text } from "react-native";
 import { View } from "../../components/Themed";
-import { Button, Form, Item, Input, Label } from "native-base";
+import { Button, Form, Item, Input, Label, Icon } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
@@ -47,6 +47,7 @@ export default function UserScreen() {
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -241,10 +242,15 @@ export default function UserScreen() {
               >
                 <Label>Contraseña</Label>
                 <Input
-                  secureTextEntry={true}
+                  secureTextEntry={!showPassword}
                   value={password}
                   placeholder="Contraseña"
                   onChangeText={(texto) => setPassword(texto)}
+                />
+                <Icon
+                  style={{ fontSize: 22 }}
+                  name={!showPassword ? "eye" : "eye-off"}
+                  onPress={() => setShowPassword((pass) => !pass)}
                 />
               </Item>
             </Form>
