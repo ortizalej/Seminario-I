@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Image, StyleSheet } from "react-native";
 import { View } from "../../components/Themed";
-import { withSafeAreaInsets } from "react-native-safe-area-context";
+// import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {
   Item,
@@ -26,9 +26,9 @@ import {
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
-import TopBar from "../../components/TopBar";
+// import TopBar from "../../components/TopBar";
 import OptionTravelCard from "../../components/OptionTravelCard";
-import BottomSheet from "@gorhom/bottom-sheet";
+// import BottomSheet from "@gorhom/bottom-sheet";
 import SwipeUpDown from "react-native-swipe-up-down";
 import useUserLogged from "../../hooks/useUserLogged";
 import { User } from "../../types";
@@ -105,8 +105,6 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location && location.coords) {
-      console.log("entre a modificar", location.coords);
-      console.log("geolocalizationOrigen", geolocalizationOrigen);
       setgeolocalizationOrigen({
         latitude: Number(location.coords.latitude),
         longitude: Number(location.coords.longitude),
@@ -116,7 +114,6 @@ export default function HomeScreen() {
           latitude: Number(location.coords.latitude),
           longitude: Number(location.coords.longitude),
         });
-        console.log("address", address);
         setCurrentAddress(address);
       })();
     }
@@ -180,7 +177,7 @@ export default function HomeScreen() {
         onShowMini={() => console.log("mini")}
         onShowFull={() => console.log("full")}
         disablePressToShow={true}
-        style={{ backgroundColor: "#ffffff" }}
+        style={{ backgroundColor: "#eeeeee" }}
       />
     </View>
   );
@@ -188,7 +185,7 @@ export default function HomeScreen() {
 
 const ItemMini = ({ searchTravels, user, swideUpRef }) => {
   return (
-    <View style={{ backgroundColor: "#ffffff" }}>
+    <View style={{ backgroundColor: "#eeeeee" }}>
       <Text style={{ fontSize: 20, color: "#656771" }}>
         {user ? `Hola, ${user.name}` : "!Hola!"}
       </Text>
@@ -199,9 +196,9 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
         <Item
           regular
           style={{
-            borderTopStartRadius: 10,
-            borderTopEndRadius: 10,
+            borderRadius: 10,
             marginTop: 30,
+            backgroundColor: "#ffffff",
           }}
           // onPress={() => swideUpRef.current.showFull()}
         >
@@ -242,9 +239,6 @@ const ItemFull = ({
   useEffect(() => {
     if (originRef && originRef.current) {
       (originRef as any).current.focus();
-      (originRef as any).current.setAddressText(
-        `${address.street}, ${address.city} - ${address.country}`
-      );
     }
   }, []);
   useEffect(() => {
@@ -255,7 +249,7 @@ const ItemFull = ({
     }
   }, [address]);
   return (
-    <View style={styles.contentContainer}>
+    <View style={[styles.contentContainer, { backgroundColor: "#eeeeee" }]}>
       <Item
         regular
         style={{
@@ -385,7 +379,7 @@ const searchInputStyles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     height: 50,
-    backgroundColor: "#f5f6fa",
+    backgroundColor: "#ffffff",
     color: "#000000",
     // fontWeight: "bold",
     fontSize: 16,
@@ -413,7 +407,7 @@ const searchInputStyles2 = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     height: 50,
-    backgroundColor: "#f5f6fa",
+    backgroundColor: "#ffffff",
     color: "#000000",
     // fontWeight: "bold",
     fontSize: 16,
