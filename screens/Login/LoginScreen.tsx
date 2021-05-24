@@ -149,6 +149,10 @@ export default function LoginScreen() {
         id: resp.msg._id,
         email: resp.msg.email,
         name: resp.msg.name,
+        surname: resp.msg.surname,
+        phoneNumber: resp.msg.phoneNumber,
+        prefix: resp.msg.prefix,
+        image: resp.msg.image,
         password: password,
         remembered: rememberMe,
       });

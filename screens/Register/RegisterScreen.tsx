@@ -25,7 +25,7 @@ import {
   LoginText,
   ContainerInput,
 } from "./register.styles";
-import { createAccountService } from "../../services/userService";
+import { createUserService } from "../../services/userService";
 import { ServiceResult, User } from "../../types";
 import Modal from "../../components/Modal";
 
@@ -54,7 +54,7 @@ export default function RegisterScreen() {
 
   const navigation = useNavigation();
 
-  const createAccount = async () => {
+  const createUser = async () => {
     setLoading(true);
     const user: User = {
       name,
@@ -65,7 +65,7 @@ export default function RegisterScreen() {
       password,
       remembered: false,
     };
-    const resp = await createAccountService(user);
+    const resp = await createUserService(user);
     if (resp.isSuccess) {
       setMsg(resp.msg);
       setMsg(`${name} registrado correctamente`);
@@ -104,7 +104,7 @@ export default function RegisterScreen() {
 
     //guardar el usuario
     try {
-      createAccount();
+      createUser();
     } catch (error) {
       setMsg(error.message.replace("Error:", ""));
       console.log("errorr", error);

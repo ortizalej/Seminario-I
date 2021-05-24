@@ -4,7 +4,6 @@ import useUserLogged from "../hooks/useUserLogged";
 import { User, ServiceResult } from "../types";
 import { getResult } from "../utils";
 import { saveItem, USERLOGGED } from "../utils/storage";
-// import { saveItem, USERLOGGED } from "../utils/storage";
 
 export const getAllDataService = async () => {
   try {
@@ -49,7 +48,7 @@ export const authUserService = async (email, password) => {
   }
 };
 
-export const createAccountService = async (
+export const createUserService = async (
   user: User
 ): Promise<ServiceResult<any>> => {
   try {
@@ -59,6 +58,21 @@ export const createAccountService = async (
         `Usuario creado correctamente, !Bienvenido ${user.name}!`,
         true
       );
+    } else {
+      return getResult("");
+    }
+  } catch (error) {
+    return getResult(error.response.data.errores[0].msg, false);
+  }
+};
+
+export const updateUserService = async (
+  user: User
+): Promise<ServiceResult<any>> => {
+  try {
+    const resp = await clientAxios.put(`/users/${user.id}`, user);
+    if (resp && resp.data) {
+      return getResult(`Datos actualizados correctamente!`, true);
     } else {
       return getResult("");
     }

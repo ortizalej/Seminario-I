@@ -9,7 +9,7 @@ import {
 } from "react-native";
 // import CheckBox from "@react-native-community/checkbox";
 import { Checkbox } from "react-native-paper";
-import { Text } from "react-native";
+import { Text, Button as NativeButton } from "react-native";
 import { View } from "../../components/Themed";
 import { Button, Form, Item, Input, Label, Icon } from "native-base";
 import { useNavigation } from "@react-navigation/core";
@@ -23,11 +23,12 @@ import {
   ButtonContainer,
   Title,
 } from "./user.styles";
-import { createAccountService } from "../../services/userService";
-import { ServiceResult, User } from "../../types";
+import { updateUserService } from "../../services/userService";
+import { ServiceResult, User, USERLOGGED } from "../../types";
 import Modal from "../../components/Modal";
 import * as ImagePicker from "expo-image-picker";
 import useUserLogged from "../../hooks/useUserLogged";
+import { saveItem } from "../../utils/storage";
 interface SelectedCountry {
   name: string;
   flag: string;
@@ -48,7 +49,6 @@ export default function UserScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const [showTerms, setShowTerms] = useState<boolean>(false);
@@ -67,6 +67,7 @@ export default function UserScreen() {
       if (Platform.OS !== "web") {
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log("status", status);
         if (status !== "granted") {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
@@ -85,6 +86,7 @@ export default function UserScreen() {
       setSurname(user.surname);
       setEmail(user.email);
       setPassword(user.password);
+      setPrefix(user.prefix);
       setPhoneNumber(user.phoneNumber);
       user.image && setImage(user.image);
     }
@@ -104,16 +106,82 @@ export default function UserScreen() {
   }, [selectedCountry]);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      console.log("result", result);
 
-    if (!result.cancelled) {
-      setImage(result.uri);
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    } catch (error) {
+      alert(error);
     }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    // setTimeout(() => {
+    //validar
+    if (
+      name === "" ||
+      surname === "" ||
+      prefix === "" ||
+      phoneNumber === "" ||
+      email === "" ||
+      password === ""
+    ) {
+      // Mostrar un error
+      setLoading(false);
+      setMsg("Todos los campos son obligatorios");
+      return;
+    }
+
+    //password al menos 6 caracteres
+    if (password.length < 6) {
+      setLoading(false);
+      setMsg("El password debe ser de al menos 6 caracteres");
+      return;
+    }
+    //actualizar el usuario/cuenta
+    try {
+      updateUser();
+    } catch (error) {
+      setMsg(error.message.replace("Error:", ""));
+      console.log("errorr", error);
+    } finally {
+      setLoading(false);
+    }
+    // }, 1000);
+  };
+
+  const updateUser = async () => {
+    setLoading(true);
+    const userToUpdate: User = {
+      id: user ? user.id : "",
+      name,
+      surname,
+      phoneNumber,
+      prefix,
+      email,
+      image,
+      password,
+      remembered: user ? user.remembered : false,
+    };
+    const resp = await updateUserService(userToUpdate);
+    if (resp.isSuccess) {
+      setMsg(resp.msg);
+      setMsg(`${name} ha actualizado sus datos correctamente`);
+      // Actualizamos usuario cacheado
+      await saveItem(USERLOGGED, userToUpdate);
+    } else {
+      setMsg(resp.msg);
+    }
+    setLoading(false);
   };
 
   return (
@@ -147,14 +215,33 @@ export default function UserScreen() {
                   source={
                     image
                       ? { uri: image }
-                      : require("../../assets/images/laMona.jpg")
+                      : require("../../assets/images/noImageAvailable.png")
                   }
                   style={{
                     width: 150,
                     height: 150,
                     borderRadius: 150 / 2,
+                    borderWidth: 1,
                   }}
                 />
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <NativeButton
+                    title="Pick an image from camera roll"
+                    onPress={pickImage}
+                  />
+                  {image && (
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: 200, height: 200 }}
+                    />
+                  )}
+                </View>
                 <Button
                   block
                   primary
@@ -169,7 +256,7 @@ export default function UserScreen() {
                       alignSelf: "center",
                     },
                   ]}
-                  onPress={() => pickImage()}
+                  onPress={pickImage}
                 >
                   <Text style={{ fontSize: 20, color: "#ffffff" }}>
                     {image ? "Actualizar imagen" : "Agregar Imagen"}
@@ -206,7 +293,7 @@ export default function UserScreen() {
                   <Input
                     placeholder="Prefijo"
                     onFocus={() => setVisible(true)}
-                    value={selectedCountry?.dial_code}
+                    value={prefix ? prefix : selectedCountry?.dial_code}
                   />
                   <PrefixPicker
                     visible={visible}
@@ -219,7 +306,7 @@ export default function UserScreen() {
                   <Input
                     keyboardType="numeric"
                     placeholder="Teléfono"
-                    value={phoneNumber}
+                    value={String(phoneNumber)}
                     onChangeText={(val) => setPhoneNumber(val)}
                   />
                 </ContainerInput>
@@ -259,7 +346,7 @@ export default function UserScreen() {
                 block
                 primary
                 style={[globalStyles.button, {}]}
-                onPress={() => alert("sarasa")}
+                onPress={() => handleSubmit()}
               >
                 <Text style={globalStyles.buttonText}>Guardar</Text>
               </Button>
@@ -267,7 +354,7 @@ export default function UserScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
-      {loading && <Spinner />}
+      {loading ? <Spinner /> : null}
     </CustomContainer>
   );
 }
