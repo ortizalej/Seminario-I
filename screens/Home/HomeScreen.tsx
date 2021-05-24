@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, BackHandler, Alert } from "react-native";
 import { View } from "../../components/Themed";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -83,6 +83,13 @@ export default function HomeScreen() {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     })();
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => true
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
@@ -186,12 +193,38 @@ export default function HomeScreen() {
 const ItemMini = ({ searchTravels, user, swideUpRef }) => {
   return (
     <View style={{ backgroundColor: "#eeeeee" }}>
-      <Text style={{ fontSize: 20, color: "#656771" }}>
-        {user ? `Hola, ${user.name}` : "!Hola!"}
-      </Text>
-      <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-        ¿A donde te dirigís?
-      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "transparent",
+        }}
+      >
+        <View style={{ backgroundColor: "transparent" }}>
+          <Text style={{ fontSize: 20, color: "#656771" }}>
+            {user ? `Hola, ${user.name}` : "!Hola!"}
+          </Text>
+          <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+            ¿A donde te dirigís?
+          </Text>
+        </View>
+        <View style={{ backgroundColor: "transparent" }}>
+          {user && user.image && (
+            <Image
+              source={{ uri: user.image }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 150 / 2,
+                borderWidth: 1,
+                borderColor: "#5985EB",
+              }}
+            />
+          )}
+        </View>
+      </View>
+
       {!searchTravels ? (
         <Item
           regular
