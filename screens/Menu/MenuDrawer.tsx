@@ -12,6 +12,7 @@ import NavigationDrawerStructure from "./NavigationDrawerStructure";
 import HomeScreen from "../Home/HomeScreen";
 import CloseSessionScreen from "../CloseSession/CloseSession";
 import UserScreen from "../User/UserScreen";
+import CustomSidebarMenu from "../../components/CustomSidebarMenu";
 
 const MenuScreen = () => {
   const Drawer = createDrawerNavigator();
@@ -23,6 +24,7 @@ const MenuScreen = () => {
         activeTintColor: "blue",
         itemStyle: { marginVertical: 5 },
       }}
+      drawerContent={(props) => <CustomSidebarMenu {...props} />}
     >
       <Drawer.Screen
         name="Inicio"

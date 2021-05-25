@@ -13,6 +13,7 @@ import { Text, Button as NativeButton } from "react-native";
 import { View } from "../../components/Themed";
 import { Button, Form, Item, Input, Label, Icon } from "native-base";
 import { useNavigation } from "@react-navigation/core";
+import { Feather } from "@expo/vector-icons";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
 import RNPhoneCodeSelect from "react-native-phone-code-select";
@@ -32,6 +33,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useUserLogged from "../../hooks/useUserLogged";
 import { saveItem } from "../../utils/storage";
 import ImagePicker from "../../components/ImagePicker";
+
 interface SelectedCountry {
   name: string;
   flag: string;
@@ -66,17 +68,8 @@ export default function UserScreen() {
 
   const navigation = useNavigation();
 
+  const IMAGE_NOT_AVAILABLE = "../../assets/images/noImageAvailable.png";
   useEffect(() => {
-    // (async () => {
-    //   if (Platform.OS !== "web") {
-    //     const { status } =
-    //       await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //     console.log("status", status);
-    //     if (status !== "granted") {
-    //       alert("Sorry, we need camera roll permissions to make this work!");
-    //     }
-    //   }
-    // })();
     const getUser = async () => {
       const usr = await useUserLogged();
       setUser(usr);
@@ -108,55 +101,6 @@ export default function UserScreen() {
       setPrefix(selectedCountry.dial_code);
     }
   }, [selectedCountry]);
-
-  // const pickImage = async () => {
-  //   try {
-  //     // let result = await ImagePicker.launchImageLibraryAsync({
-  //     //   mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     //   allowsEditing: true,
-  //     //   aspect: [4, 3],
-  //     //   quality: 1,
-  //     // });
-  //     // console.log(result);
-  //     // if (!result.cancelled) {
-  //     //   console.log(result);
-  //     // }
-  //     const { status } = await Permissions.askAsync(
-  //       Permissions.CAMERA,
-  //       Permissions.CAMERA_ROLL
-  //     );
-  //     if (status === "granted") {
-  //       ImagePicker.launchCameraAsync({
-  //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //         allowsEditing: true,
-  //         aspect: [1, 1],
-  //       });
-  //     }
-  //     console.log("pase por aca,", status);
-  //   } catch (e) {
-  //     console.log("e", e);
-  //   }
-  // };
-
-  // const pickImage = async () => {
-  //   try {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
-  //     console.log("result", result);
-
-  //     if (!result.cancelled) {
-  //       console.log(result);
-  //       // setImage(result.uri);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     alert(error);
-  //   }
-  // };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -264,7 +208,7 @@ export default function UserScreen() {
                         ? {
                             uri: image,
                           }
-                        : require("../../assets/images/noImageAvailable.png")
+                        : require(IMAGE_NOT_AVAILABLE)
                     }
                     style={{
                       width: 150,
@@ -273,7 +217,14 @@ export default function UserScreen() {
                       borderWidth: 1,
                     }}
                   />
-                  <Button
+                  <Feather
+                    name="edit"
+                    size={24}
+                    color="grey"
+                    style={{ marginLeft: -15 }}
+                    onPress={() => goPickImage()}
+                  />
+                  {/* <Button
                     block
                     primary
                     style={[
@@ -292,7 +243,7 @@ export default function UserScreen() {
                     <Text style={{ fontSize: 20, color: "#ffffff" }}>
                       {image ? "Actualizar imagen" : "Agregar Imagen"}
                     </Text>
-                  </Button>
+                  </Button> */}
                 </View>
                 <Item
                   floatingLabel

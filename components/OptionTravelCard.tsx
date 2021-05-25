@@ -9,6 +9,7 @@ export interface OptionTravelCardProps {
   frequenceMinutes: number;
   imgUri: ImageSourcePropType;
   price: number;
+  props?: any;
 }
 
 const OptionTravelCard: FC<OptionTravelCardProps> = ({
@@ -16,12 +17,16 @@ const OptionTravelCard: FC<OptionTravelCardProps> = ({
   title,
   frequenceMinutes,
   price,
+  props,
 }) => {
   return (
-    <CardItem style={{ paddingBottom: 10 }}>
+    <CardItem
+      style={{ paddingBottom: 10, backgroundColor: "#EDEDED" }}
+      {...props}
+    >
       <Badge
         style={{
-          backgroundColor: "#EDEDED",
+          backgroundColor: "#FFFFFF",
           width: "100%",
           height: 70,
         }}
@@ -32,6 +37,10 @@ const OptionTravelCard: FC<OptionTravelCardProps> = ({
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "transparent",
+            borderColor: "#EDEDED",
+            // borderWidth: 2,
+            // borderRadius: 10,
+            // padding: 8,
           }}
         >
           <View

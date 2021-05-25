@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, StyleSheet, BackHandler, Alert } from "react-native";
+import { Image, StyleSheet, BackHandler } from "react-native";
 import { View } from "../../components/Themed";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -22,6 +22,7 @@ import {
   Button,
   Icon,
   Input,
+  Picker,
 } from "native-base";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
@@ -33,6 +34,7 @@ import SwipeUpDown from "react-native-swipe-up-down";
 import useUserLogged from "../../hooks/useUserLogged";
 import { User } from "../../types";
 import * as Location from "expo-location";
+import globalStyles from "../../styles/global";
 
 interface ISwideRef {
   showMini: () => void;
@@ -191,16 +193,10 @@ export default function HomeScreen() {
 }
 
 const ItemMini = ({ searchTravels, user, swideUpRef }) => {
+  const [selectedFilter, setSelectedFilter] = useState<string>("Menor Precio");
   return (
     <View style={{ backgroundColor: "#eeeeee" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "transparent",
-        }}
-      >
+      {!searchTravels && (
         <View style={{ backgroundColor: "transparent" }}>
           <Text style={{ fontSize: 20, color: "#656771" }}>
             {user ? `Hola, ${user.name}` : "!Hola!"}
@@ -209,21 +205,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
             ¿A donde te dirigís?
           </Text>
         </View>
-        <View style={{ backgroundColor: "transparent" }}>
-          {user && user.image && (
-            <Image
-              source={{ uri: user.image }}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 150 / 2,
-                borderWidth: 1,
-                borderColor: "#5985EB",
-              }}
-            />
-          )}
-        </View>
-      </View>
+      )}
 
       {!searchTravels ? (
         <Item
@@ -231,7 +213,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
           style={{
             borderRadius: 10,
             marginTop: 30,
-            backgroundColor: "#ffffff",
+            backgroundColor: "#FFFFFF",
           }}
           // onPress={() => swideUpRef.current.showFull()}
         >
@@ -243,7 +225,54 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
           <Icon name="search" />
         </Item>
       ) : (
-        <Card>
+        <Card style={{ backgroundColor: "#EDEDED" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginHorizontal: 10,
+              backgroundColor: "#EDEDED",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#FFFFFF",
+                width: 220,
+                height: 40,
+                marginTop: 10,
+              }}
+            >
+              <Picker
+                selectedValue={selectedFilter}
+                mode="dropdown"
+                style={{
+                  height: 40,
+                  width: 220,
+                  color: "#000000",
+                  borderWidth: 1,
+                  borderColor: "#000000",
+                }}
+                textStyle={{ color: "blue" }}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedFilter(itemValue)
+                }
+              >
+                <Picker.Item label="Menor Precio" value="Menor Precio" />
+                <Picker.Item
+                  label="Menor tiempo de espera"
+                  value="Menor tiempo de espera"
+                />
+              </Picker>
+            </View>
+            <Button
+              bordered
+              onPress={() => console.log("filtrando")}
+              style={{ marginTop: 10, height: 30 }}
+            >
+              <Text style={{ fontWeight: "bold", fontSize: 17 }}>Filtrar</Text>
+            </Button>
+          </View>
           <OptionTravelCard
             title="Cabify"
             imgUri={require("../../assets/images/cabify2.png")}
