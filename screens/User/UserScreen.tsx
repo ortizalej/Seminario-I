@@ -254,6 +254,7 @@ export default function UserScreen() {
                 >
                   <Label>Nombre</Label>
                   <Input
+                    autoFocus
                     placeholder="Nombre"
                     value={name}
                     style={{ width: "100%" }}
@@ -269,6 +270,7 @@ export default function UserScreen() {
                 >
                   <Label>Apellido</Label>
                   <Input
+                    autoFocus
                     placeholder="Apellido"
                     value={surname}
                     style={{ width: "100%" }}
@@ -279,6 +281,7 @@ export default function UserScreen() {
                   <ContainerInput floatingLabel style={{ flex: 1 }}>
                     <Label>Prefijo</Label>
                     <Input
+                      autoFocus
                       placeholder="Prefijo"
                       onFocus={() => setVisible(true)}
                       value={prefix ? prefix : selectedCountry?.dial_code}
@@ -308,6 +311,7 @@ export default function UserScreen() {
                 >
                   <Label>Email</Label>
                   <Input
+                    autoFocus
                     placeholder="Email"
                     value={email}
                     style={{ width: "90%" }}
@@ -322,6 +326,7 @@ export default function UserScreen() {
                 >
                   <Label>Contraseña</Label>
                   <Input
+                    autoFocus
                     secureTextEntry={!showPassword}
                     value={password}
                     placeholder="Contraseña"

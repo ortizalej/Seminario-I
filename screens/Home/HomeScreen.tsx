@@ -270,7 +270,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
               onPress={() => console.log("filtrando")}
               style={{ marginTop: 10, height: 30 }}
             >
-              <Text style={{ fontWeight: "bold", fontSize: 17 }}>Filtrar</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 17 }}>Aplicar</Text>
             </Button>
           </View>
           <OptionTravelCard
