@@ -41,6 +41,7 @@
     "expo-web-browser": "~9.1.0",
     "firebase": "^8.6.1",
     "i": "^0.3.6",
+    "moment": "^2.29.1",
     "native-base": "^2.15.2",
     "npm": "^7.13.0",
     "react": "16.13.1",

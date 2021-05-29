@@ -6,19 +6,15 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-// import CheckBox from "@react-native-community/checkbox";
-import { Checkbox } from "react-native-paper";
-import { Text } from "react-native";
-import { View } from "../../components/Themed";
-import { Button, Form, Item, Input } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
 import RNPhoneCodeSelect from "react-native-phone-code-select";
 import { CustomContainer } from "./travel.styles";
-import { createAccountService } from "../../services/userService";
-import { ServiceResult, User } from "../../types";
+// import { createAccountService } from "../../services/userService";
+import { ServiceResult, Travel, User } from "../../types";
 import Modal from "../../components/Modal";
+import TravelCard from "../../components/TravelCard";
 
 interface SelectedCountry {
   name: string;
@@ -44,7 +40,6 @@ export default function TravelsScreen() {
   const [visible, setVisible] = useState<boolean>(false);
 
   const navigation = useNavigation();
-
   useEffect(() => {
     if (msg) {
       ToastAndroid.show(msg, ToastAndroid.SHORT);
@@ -62,10 +57,112 @@ export default function TravelsScreen() {
     <CustomContainer>
       <SafeAreaView style={{ flex: 1, marginBottom: 30 }}>
         <ScrollView>
-          <Text>Mis viajes</Text>
+          {travels &&
+            travels.map((travel) => (
+              <TravelCard key={travel.id} travel={travel} />
+            ))}
         </ScrollView>
       </SafeAreaView>
       {loading && <Spinner />}
     </CustomContainer>
   );
 }
+
+const travels: Travel[] = [
+  {
+    amount: 784.66,
+    date: new Date(),
+    originAddress: "Iberlucea 3155, Lanus",
+    destinationAddress: "Solis 793, Montserrat",
+    enterprise: "Cabify",
+    status: "Finalizado",
+    paidMethod: "Efectivo",
+    totalDistance: 20.4,
+  },
+  {
+    amount: 345.99,
+    date: new Date(),
+    originAddress: "Riego Nuñez 574, Lomas de Zamora",
+    destinationAddress: "Lopez y Planes 1882, Avellaneda",
+    enterprise: "Uber",
+    status: "En Curso",
+    paidMethod: "Tarjeta  Crédito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 10.2,
+  },
+  {
+    amount: 1040,
+    date: new Date(),
+    originAddress: "Hipolito Yrigoyen 10453, Lomas de Zamora",
+    destinationAddress: "Maximo Páz 432, Burzaco",
+    enterprise: "Uber",
+    status: "Cancelado",
+    paidMethod: "Tarjeta Débito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 30.1,
+  },
+  {
+    amount: 784.66,
+    date: new Date(),
+    originAddress: "Iberlucea 3155, Lanus",
+    destinationAddress: "Solis 793, Montserrat",
+    enterprise: "Cabify",
+    status: "Finalizado",
+    paidMethod: "Efectivo",
+    totalDistance: 20.4,
+  },
+  {
+    amount: 345.99,
+    date: new Date(),
+    originAddress: "Riego Nuñez 574, Lomas de Zamora",
+    destinationAddress: "Lopez y Planes 1882, Avellaneda",
+    enterprise: "Uber",
+    status: "En Curso",
+    paidMethod: "Tarjeta  Crédito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 10.2,
+  },
+  {
+    amount: 1040,
+    date: new Date(),
+    originAddress: "Hipolito Yrigoyen 10453, Lomas de Zamora",
+    destinationAddress: "Maximo Páz 432, Burzaco",
+    enterprise: "Uber",
+    status: "Cancelado",
+    paidMethod: "Tarjeta Débito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 30.1,
+  },
+  {
+    amount: 784.66,
+    date: new Date(),
+    originAddress: "Iberlucea 3155, Lanus",
+    destinationAddress: "Solis 793, Montserrat",
+    enterprise: "Cabify",
+    status: "Finalizado",
+    paidMethod: "Efectivo",
+    totalDistance: 20.4,
+  },
+  {
+    amount: 345.99,
+    date: new Date(),
+    originAddress: "Riego Nuñez 574, Lomas de Zamora",
+    destinationAddress: "Lopez y Planes 1882, Avellaneda",
+    enterprise: "Uber",
+    status: "En Curso",
+    paidMethod: "Tarjeta  Crédito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 10.2,
+  },
+  {
+    amount: 1040,
+    date: new Date(),
+    originAddress: "Hipolito Yrigoyen 10453, Lomas de Zamora",
+    destinationAddress: "Maximo Páz 432, Burzaco",
+    enterprise: "Uber",
+    status: "Cancelado",
+    paidMethod: "Tarjeta Débito",
+    cardNumber: "4224 4392 1284 1023",
+    totalDistance: 30.1,
+  },
+];

@@ -13,6 +13,8 @@ import HomeScreen from "../Home/HomeScreen";
 import CloseSessionScreen from "../CloseSession/CloseSession";
 import UserScreen from "../User/UserScreen";
 import CustomSidebarMenu from "../../components/CustomSidebarMenu";
+import TravelsScreen from "../Travels/TravelsScreen";
+import { Feather } from "@expo/vector-icons";
 
 const MenuScreen = () => {
   const Drawer = createDrawerNavigator();
@@ -47,6 +49,15 @@ const MenuScreen = () => {
         }}
         component={userStack}
       />
+      {/* <Drawer.Screen
+        name="Mis Viajes"
+        options={{
+          drawerLabel: "Mis Viajes",
+          drawerIcon: () => <Feather name="map" size={25} color="#5985EB" />,
+          headerTitleStyle: { marginTop: 20 },
+        }}
+        component={travelsStack}
+      /> */}
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"
@@ -156,6 +167,33 @@ const userStack = ({ navigation }) => {
       <Stack.Screen
         name="UserScreen"
         component={UserScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <NavigationDrawerStructure navigationProps={navigation} />
+          ),
+          headerTitle: () => <LogoImage />,
+          headerStyle: {
+            backgroundColor: "#FFFFFF",
+            display: "none",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const travelsStack = ({ navigation }) => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator initialRouteName="TravelsScreen">
+      <Stack.Screen
+        name="TravelsScreen"
+        component={TravelsScreen}
         options={{
           title: "",
           headerLeft: () => (

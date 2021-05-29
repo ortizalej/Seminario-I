@@ -275,13 +275,13 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
           </View>
           <OptionTravelCard
             title="Cabify"
-            imgUri={require("../../assets/images/cabify2.png")}
+            imgUri={require("../../assets/images/cabify.png")}
             frequenceMinutes={20}
             price={927.02}
           />
           <OptionTravelCard
             title="Uber"
-            imgUri={require("../../assets/images/Uber.png")}
+            imgUri={require("../../assets/images/uber.png")}
             frequenceMinutes={18}
             price={984.34}
           />

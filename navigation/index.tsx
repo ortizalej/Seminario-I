@@ -71,11 +71,11 @@ function RootNavigator() {
         component={HomeScreen}
         options={{ title: "Homee!" }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Travels"
         component={TravelsScreen}
         options={{ title: "Travels Screen" }}
-      /> */}
+      />
       <Stack.Screen
         name="User"
         component={UserScreen}

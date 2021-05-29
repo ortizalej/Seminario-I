@@ -45,5 +45,18 @@ export interface User {
   remembered: boolean;
 }
 
+export interface Travel {
+  id?: string;
+  date: Date;
+  originAddress: string;
+  destinationAddress: string;
+  status: "Cancelado" | "En Curso" | "Finalizado";
+  amount: number;
+  paidMethod: "Efectivo" | "Tarjeta  Crédito" | "Tarjeta Débito";
+  cardNumber?: string;
+  totalDistance?: number;
+  enterprise: "Uber" | "Cabify";
+}
+
 // Constantes para Async Storage
 export const USERLOGGED = "usserlogged";
