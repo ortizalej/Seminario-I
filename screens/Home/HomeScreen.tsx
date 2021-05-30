@@ -5,50 +5,46 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Image, StyleSheet, BackHandler } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  BackHandler,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { View } from "../../components/Themed";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import {
-  Item,
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Text,
-  Badge,
-  Button,
-  Icon,
-  Input,
-  Picker,
-} from "native-base";
+import { Item, Card, Text, Button, Icon, Input, Picker } from "native-base";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
-
-// import TopBar from "../../components/TopBar";
 import OptionTravelCard from "../../components/OptionTravelCard";
-// import BottomSheet from "@gorhom/bottom-sheet";
 import SwipeUpDown from "react-native-swipe-up-down";
 import useUserLogged from "../../hooks/useUserLogged";
 import { User } from "../../types";
 import * as Location from "expo-location";
 import globalStyles from "../../styles/global";
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
+const OBELISC_LATITUDE = -34.6037389;
+const OBELISC_LONGITUDE = -58.38157;
+const { height, width } = Dimensions.get("window");
+const LATITUDE_DELTA = 0.28;
+const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 interface ISwideRef {
   showMini: () => void;
   showFull: () => void;
 }
 export default function HomeScreen() {
   const swideUpRef = useRef<ISwideRef>();
-  // const originRef = useRef();
-  const [location, setLocation] = useState<Location.LocationObject>();
+  const mapRef = useRef<MapView>(null);
+  const [currentLocation, setCurrentLocation] =
+    useState<Location.LocationObject>();
   const [currentAddress, setCurrentAddress] =
     useState<Location.LocationGeocodedAddress[]>();
   const [geolocalizationOrigen, setgeolocalizationOrigen] = useState({
-    latitude: location && location.coords ? location.coords.latitude : 0,
-    longitude: location && location.coords ? location.coords.longitude : 0,
+    latitude: 0,
+    longitude: 0,
   });
   const [geolocalizationDestino, setgeolocalizationDestino] = useState({
     latitude: 0,
@@ -57,17 +53,16 @@ export default function HomeScreen() {
   const [searchTravels, setSearchTravels] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
   const [haveRoute, setHaveRoute] = useState<String>("none");
-  const [latitudeDeltaOrigen, setLatitudeDeltaOrigen] =
-    useState<number>(0.0922);
-  const [longitudeDeltaOrigen, setLongitudeDeltaOrigen] =
-    useState<number>(0.0421);
 
-  // const bottomSheetRef = useRef<BottomSheet>(null);
-  // const snapPoints = useMemo(() => ["25%", "50%"], []);
-
-  // const handleSheetChanges = useCallback((index: number) => {
-  //   console.log("handleSheetChanges", index);
-  // }, []);
+  // const handleCurrentLocation = async () => {
+  //   let { status } = await Location.requestForegroundPermissionsAsync();
+  //   if (status !== "granted") {
+  //     return;
+  //   }
+  //   console.log("seteando current location");
+  //   let location = await Location.getCurrentPositionAsync({});
+  //   setCurrentLocation(location);
+  // };
 
   useEffect(() => {
     const getUser = async () => {
@@ -83,7 +78,7 @@ export default function HomeScreen() {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      setCurrentLocation(location);
     })();
 
     const backHandler = BackHandler.addEventListener(
@@ -94,7 +89,25 @@ export default function HomeScreen() {
     return () => backHandler.remove();
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   // if (
+  //   //   geolocalizationOrigen &&
+  //   //   geolocalizationDestino &&
+  //   //   geolocalizationOrigen.latitude !== 0 &&
+  //   //   geolocalizationOrigen.longitude !== 0 &&
+  //   //   geolocalizationDestino.latitude !== 0 &&
+  //   //   geolocalizationDestino.latitude !== 0
+  //   // ) {
+  //   //   setSearchTravels(true);
+  //   //   if (swideUpRef && swideUpRef.current) {
+  //   //     swideUpRef.current.showMini();
+  //   //   }
+  //   // } else {
+  //   //   setSearchTravels(false);
+  //   // }
+  // }, [geolocalizationOrigen, geolocalizationDestino]);
+
+  const handleSearch = () => {
     if (
       geolocalizationOrigen &&
       geolocalizationDestino &&
@@ -110,58 +123,118 @@ export default function HomeScreen() {
     } else {
       setSearchTravels(false);
     }
-  }, [geolocalizationOrigen, geolocalizationDestino]);
+  };
 
   useEffect(() => {
-    if (location && location.coords) {
+    if (currentLocation && currentLocation.coords) {
       setgeolocalizationOrigen({
-        latitude: Number(location.coords.latitude),
-        longitude: Number(location.coords.longitude),
+        latitude: Number(currentLocation.coords.latitude),
+        longitude: Number(currentLocation.coords.longitude),
       });
       (async () => {
         const address = await Location.reverseGeocodeAsync({
-          latitude: Number(location.coords.latitude),
-          longitude: Number(location.coords.longitude),
+          latitude: Number(currentLocation.coords.latitude),
+          longitude: Number(currentLocation.coords.longitude),
         });
         setCurrentAddress(address);
       })();
     }
-  }, [location]);
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (
+      mapRef &&
+      mapRef.current &&
+      geolocalizationDestino &&
+      geolocalizationOrigen
+    ) {
+      onMapReadyHandler();
+    }
+  }, [geolocalizationOrigen, geolocalizationDestino]);
+
+  const onMapReadyHandler = useCallback(() => {
+    console.log("entre a onMapReadyHandler", currentLocation);
+    // console.log("geolocalizationOrigen", geolocalizationOrigen);
+    // console.log("geolocalizationDestino", geolocalizationDestino);
+    if (Platform.OS === "ios") {
+      mapRef?.current?.fitToElements(false);
+    } else {
+      //filtramos para que cuando cargue la app no haga zoom, hasta q consiga la currentDirection
+      const coordinates = [
+        currentLocation
+          ? {
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+            }
+          : geolocalizationOrigen,
+      ];
+      if (geolocalizationDestino.latitude !== 0) {
+        coordinates.push(geolocalizationDestino);
+      }
+      console.log("coordinates", coordinates);
+      mapRef?.current?.fitToCoordinates(coordinates, {
+        animated: true,
+        edgePadding: {
+          top: 100,
+          right: 100,
+          bottom: 1000,
+          left: 100,
+        },
+      });
+    }
+  }, [mapRef, currentLocation, geolocalizationDestino]);
+
+  // useEffect(() => {
+  //   if (currentLocation !== null && currentLocation !== undefined) {
+  //     console.log("entramo por aquiii", currentLocation);
+  //     onMapReadyHandler();
+  //   }
+  // }, [currentLocation]);
 
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
+        // onMapReady={onMapReadyHandler}
+        showsUserLocation
+        showsMyLocationButton
         style={styles.map}
         initialRegion={{
           latitude:
-            location && location.coords
-              ? location.coords.latitude
-              : -34.6037389,
+            currentLocation && currentLocation.coords
+              ? currentLocation.coords.latitude
+              : OBELISC_LATITUDE,
           longitude:
-            location && location.coords
-              ? location.coords.longitude
-              : -58.3815704,
-          latitudeDelta: latitudeDeltaOrigen,
-          longitudeDelta: longitudeDeltaOrigen,
+            currentLocation && currentLocation.coords
+              ? currentLocation.coords.longitude
+              : OBELISC_LONGITUDE,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
         }}
+        minZoomLevel={5}
+        maxZoomLevel={17}
       >
         <Marker
           coordinate={geolocalizationOrigen}
           title={"Origen"}
           description={"Origen"}
         />
-        <Marker
-          coordinate={geolocalizationDestino}
-          title={"Destino"}
-          description={"Destino"}
-        />
+        {currentLocation && (
+          <Marker
+            coordinate={geolocalizationDestino}
+            title={"Destino"}
+            description={"Destino"}
+          />
+        )}
         <MapViewDirections
           origin={geolocalizationOrigen}
           destination={geolocalizationDestino}
-          apikey="AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4"
+          apikey={GOOGLE_MAPS_API_KEY}
           onReady={(result) => {
             setHaveRoute("flex");
           }}
+          strokeWidth={3}
+          strokeColor="#5985EB"
         />
       </MapView>
       <SwipeUpDown
@@ -175,16 +248,21 @@ export default function HomeScreen() {
         }
         itemFull={
           <ItemFull
+            geolocalizationOrigen={geolocalizationOrigen}
+            geolocalizationDestino={geolocalizationDestino}
             setgeolocalizationOrigen={setgeolocalizationOrigen}
             setgeolocalizationDestino={setgeolocalizationDestino}
-            location={location}
+            handleSearch={handleSearch}
+            currentLocation={currentLocation}
             address={currentAddress?.[0]}
           />
         }
         animation="easeInEaseOut"
         swipeHeight={350} // Default 60
-        onShowMini={() => console.log("mini")}
-        onShowFull={() => console.log("full")}
+        // onShowMini={() => console.log("mini")}
+        onShowFull={() =>
+          console.log("full", geolocalizationOrigen, geolocalizationDestino)
+        }
         disablePressToShow={true}
         style={{ backgroundColor: "#eeeeee" }}
       />
@@ -291,9 +369,12 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
   );
 };
 const ItemFull = ({
+  geolocalizationOrigen,
+  geolocalizationDestino,
   setgeolocalizationOrigen,
   setgeolocalizationDestino,
-  location,
+  handleSearch,
+  currentLocation,
   address,
 }) => {
   const originRef = useRef(null);
@@ -304,13 +385,13 @@ const ItemFull = ({
       (destinoRef as any).current.focus();
     }
   }, []);
-  useEffect(() => {
-    if (address && originRef && originRef.current) {
-      (originRef as any).current.setAddressText(
-        `${address.street}, ${address.city} - ${address.country}`
-      );
-    }
-  }, [address]);
+  // useEffect(() => {
+  //   if (address && originRef && originRef.current) {
+  //     (originRef as any).current.setAddressText(
+  //       `${address.street}, ${address.city} - ${address.country}`
+  //     );
+  //   }
+  // }, [address]);
   return (
     <View style={[styles.contentContainer, { backgroundColor: "#eeeeee" }]}>
       <Item
@@ -328,21 +409,9 @@ const ItemFull = ({
           onPress={(data, details = null) => {
             let latitude = details?.geometry.location.lat;
             let longitude = details?.geometry.location.lng;
-            console.log({
+            setgeolocalizationOrigen({
               latitude: Number(latitude),
               longitude: Number(longitude),
-            });
-            setgeolocalizationOrigen({
-              latitude: Number(
-                location && location.coords
-                  ? location.coords.latitude
-                  : latitude
-              ),
-              longitude: Number(
-                location && location.coords
-                  ? location.coords.longitude
-                  : longitude
-              ),
             });
           }}
           query={{
@@ -351,6 +420,20 @@ const ItemFull = ({
           enablePoweredByContainer={false}
           fetchDetails={true}
           styles={searchInputStyles}
+          predefinedPlacesAlwaysVisible
+          predefinedPlaces={[
+            {
+              description: address
+                ? `Ubicación Actual (${address.street}, ${address.city} - ${address.country})`
+                : "Ubicación Actual",
+              geometry: {
+                location: {
+                  lat: currentLocation.coords.latitude,
+                  lng: currentLocation.coords.longitude,
+                },
+              },
+            },
+          ]}
         />
       </Item>
       <Item
@@ -365,21 +448,9 @@ const ItemFull = ({
           ref={destinoRef}
           placeholder="Destino"
           onPress={(data, details = null) => {
-            console.log("DATASS", details?.geometry.location);
+            console.log("details", details);
             let latitude = details?.geometry.location.lat;
             let longitude = details?.geometry.location.lng;
-            console.log({
-              latitude: Number(
-                location && location.coords
-                  ? location.coords.latitude
-                  : latitude
-              ),
-              longitude: Number(
-                location && location.coords
-                  ? location.coords.longitude
-                  : longitude
-              ),
-            });
             setgeolocalizationDestino({
               latitude: Number(latitude),
               longitude: Number(longitude),
@@ -392,11 +463,21 @@ const ItemFull = ({
           enablePoweredByContainer={false}
           fetchDetails={true}
           styles={searchInputStyles2}
-          // renderRightButton={() => (
-          //   <Icon style={{ paddingRight: 200 }} active name="swap" />
-          // )}
         />
       </Item>
+      <Button
+        bordered
+        block
+        disabled={
+          !geolocalizationOrigen ||
+          !geolocalizationDestino ||
+          geolocalizationDestino.latitude === 0
+        }
+        onPress={() => handleSearch()}
+        style={[globalStyles.button, { height: 40 }]}
+      >
+        <Text style={globalStyles.buttonText}>Buscar Viaje</Text>
+      </Button>
     </View>
   );
 };
