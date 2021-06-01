@@ -58,5 +58,55 @@ export interface Travel {
   enterprise: "Uber" | "Cabify";
 }
 
+export interface UberEstimateItemResponse {
+  distance: number;
+  duration: number;
+  total: TotalResponse;
+}
+
+export interface CabifyEstimateResponse {
+  data: CabifyEstimateItemResponse[];
+}
+
+export interface CabifyEstimateItemResponse {
+  distance: number;
+  duration: number;
+  priceBase: PriceBaseCabifyResponse;
+  product: ProductCabifyResponse;
+  route: string[];
+  supplements: any;
+  total: TotalResponse;
+}
+
+export interface PriceBaseCabifyResponse {
+  amount: number;
+  currency: string;
+}
+
+export interface ProductCabifyResponse {
+  description: DescriptionProductCabifyResponse;
+  icon: string;
+  id: string;
+  name: NameCabifyResponse;
+}
+
+export interface DescriptionProductCabifyResponse {
+  en: string;
+  es: string;
+  pt: string;
+}
+
+export interface NameCabifyResponse {
+  ca: string;
+  en: string;
+  es: string;
+  pt: string;
+}
+
+export interface TotalResponse {
+  amount?: number;
+  currency?: string;
+}
+
 // Constantes para Async Storage
 export const USERLOGGED = "usserlogged";

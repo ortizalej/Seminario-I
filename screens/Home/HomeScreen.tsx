@@ -21,10 +21,16 @@ import MapViewDirections from "react-native-maps-directions";
 import OptionTravelCard from "../../components/OptionTravelCard";
 import SwipeUpDown from "react-native-swipe-up-down";
 import useUserLogged from "../../hooks/useUserLogged";
-import { User } from "../../types";
+import {
+  CabifyEstimateItemResponse,
+  UberEstimateItemResponse,
+  User,
+} from "../../types";
 import * as Location from "expo-location";
 import globalStyles from "../../styles/global";
 import { authCabify, estimateTravel } from "../../services/cabify";
+import Spinner from "../../components/Spinner";
+import { convertCurrencyToSymbol, randomInteger } from "../../utils";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
 const OBELISC_LATITUDE = -34.6037389;
@@ -32,6 +38,9 @@ const OBELISC_LONGITUDE = -58.38157;
 const { height, width } = Dimensions.get("window");
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
+const FILTER_LESS_COST = "Menor Precio";
+const FILTER_LESS_WAITING_TIME = "Menor tiempo de espera";
+
 interface ISwideRef {
   showMini: () => void;
   showFull: () => void;
@@ -47,7 +56,8 @@ export default function HomeScreen() {
     latitude: 0,
     longitude: 0,
   });
-  const [cabifyPrice, setCabifyPrice] = useState(0);
+  const [cabifyInfo, setCabifyInfo] = useState<CabifyEstimateItemResponse>();
+  const [uberInfo, setUberInfo] = useState<UberEstimateItemResponse>();
 
   const [geolocalizationDestino, setgeolocalizationDestino] = useState({
     latitude: 0,
@@ -56,16 +66,7 @@ export default function HomeScreen() {
   const [searchTravels, setSearchTravels] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
   const [haveRoute, setHaveRoute] = useState<String>("none");
-
-  // const handleCurrentLocation = async () => {
-  //   let { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== "granted") {
-  //     return;
-  //   }
-  //   console.log("seteando current location");
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   setCurrentLocation(location);
-  // };
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -110,7 +111,8 @@ export default function HomeScreen() {
   //   // }
   // }, [geolocalizationOrigen, geolocalizationDestino]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    setLoading(true);
     if (
       geolocalizationOrigen &&
       geolocalizationDestino &&
@@ -119,6 +121,39 @@ export default function HomeScreen() {
       geolocalizationDestino.latitude !== 0 &&
       geolocalizationDestino.latitude !== 0
     ) {
+      const cabifyResponse: CabifyEstimateItemResponse[] = await estimateTravel(
+        [geolocalizationOrigen.latitude, geolocalizationOrigen.longitude],
+        [geolocalizationDestino.latitude, geolocalizationDestino.longitude]
+      );
+      if (cabifyResponse && cabifyResponse.length) {
+        const cabifyItemResp = cabifyResponse[0];
+        console.log("cabifyItemResp", cabifyItemResp);
+        setCabifyInfo(cabifyItemResp);
+        const uberResponse: UberEstimateItemResponse = {
+          distance: cabifyResponse[0].distance,
+          duration:
+            cabifyItemResp && cabifyItemResp.duration
+              ? randomInteger(
+                  cabifyItemResp.duration * 0.8,
+                  cabifyItemResp.duration * 1.2
+                )
+              : 0,
+          total: {
+            amount:
+              cabifyItemResp &&
+              cabifyItemResp.total &&
+              cabifyItemResp.total.amount
+                ? randomInteger(
+                    cabifyItemResp.total.amount * 0.8,
+                    cabifyItemResp.total.amount * 1.2
+                  )
+                : 0,
+            currency: cabifyItemResp?.total.currency,
+          },
+        };
+        setUberInfo(uberResponse);
+      }
+
       setSearchTravels(true);
       if (swideUpRef && swideUpRef.current) {
         swideUpRef.current.showMini();
@@ -126,6 +161,7 @@ export default function HomeScreen() {
     } else {
       setSearchTravels(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -154,14 +190,9 @@ export default function HomeScreen() {
       onMapReadyHandler();
     }
   }, [geolocalizationOrigen, geolocalizationDestino]);
-  const estimateCabify = async () => {
-    const resp = await authCabify();
-    console.log('resp', resp);
-  };
+
   const onMapReadyHandler = useCallback(() => {
-    console.log("entre a onMapReadyHandler", currentLocation);
-    // console.log("geolocalizationOrigen", geolocalizationOrigen);
-    // console.log("geolocalizationDestino", geolocalizationDestino);
+    // console.log("entre a onMapReadyHandler", currentLocation);
     if (Platform.OS === "ios") {
       mapRef?.current?.fitToElements(false);
     } else {
@@ -169,17 +200,15 @@ export default function HomeScreen() {
       const coordinates = [
         currentLocation
           ? {
-            latitude: currentLocation.coords.latitude,
-            longitude: currentLocation.coords.longitude,
-          }
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+            }
           : geolocalizationOrigen,
       ];
       if (geolocalizationDestino.latitude !== 0) {
         coordinates.push(geolocalizationDestino);
       }
-      console.log("coordinates", coordinates);
-      estimateCabify();
-      //METER LLAMADO AQUI
+      // console.log("coordinates", coordinates);
       mapRef?.current?.fitToCoordinates(coordinates, {
         animated: true,
         edgePadding: {
@@ -191,13 +220,6 @@ export default function HomeScreen() {
       });
     }
   }, [mapRef, currentLocation, geolocalizationDestino]);
-
-  // useEffect(() => {
-  //   if (currentLocation !== null && currentLocation !== undefined) {
-  //     console.log("entramo por aquiii", currentLocation);
-  //     onMapReadyHandler();
-  //   }
-  // }, [currentLocation]);
 
   return (
     <View style={styles.container}>
@@ -252,6 +274,8 @@ export default function HomeScreen() {
             searchTravels={searchTravels}
             user={user}
             swideUpRef={swideUpRef}
+            cabifyInfo={cabifyInfo}
+            uberInfo={uberInfo}
           />
         }
         itemFull={
@@ -268,18 +292,45 @@ export default function HomeScreen() {
         animation="easeInEaseOut"
         swipeHeight={350} // Default 60
         // onShowMini={() => console.log("mini")}
-        onShowFull={() =>
-          console.log("full", geolocalizationOrigen, geolocalizationDestino)
-        }
+        // onShowFull={() =>
+        //   console.log("full", geolocalizationOrigen, geolocalizationDestino)
+        // }
         disablePressToShow={true}
         style={{ backgroundColor: "#eeeeee" }}
       />
+      {loading && <Spinner />}
     </View>
   );
 }
 
-const ItemMini = ({ searchTravels, user, swideUpRef }) => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("Menor Precio");
+const ItemMini = ({
+  searchTravels,
+  user,
+  swideUpRef,
+  cabifyInfo,
+  uberInfo,
+}) => {
+  const [selectedFilter, setSelectedFilter] =
+    useState<string>(FILTER_LESS_COST);
+  const [isUberFirst, setIsUberFirst] = useState<boolean>(false);
+
+  const handleSorting = () => {
+    console.log(selectedFilter);
+    if (selectedFilter === FILTER_LESS_COST) {
+      if (cabifyInfo?.total?.amount > uberInfo.total.amount) {
+        setIsUberFirst(true);
+      } else {
+        setIsUberFirst(false);
+      }
+    } else if (selectedFilter === FILTER_LESS_WAITING_TIME) {
+      if (cabifyInfo?.duration > uberInfo?.duration) {
+        setIsUberFirst(true);
+      } else {
+        setIsUberFirst(false);
+      }
+    }
+  };
+
   return (
     <View style={{ backgroundColor: "#eeeeee" }}>
       {!searchTravels && (
@@ -301,7 +352,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
             marginTop: 30,
             backgroundColor: "#FFFFFF",
           }}
-        // onPress={() => swideUpRef.current.showFull()}
+          // onPress={() => swideUpRef.current.showFull()}
         >
           <Input
             placeholder="Introduce tu destino"
@@ -344,33 +395,59 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
                   setSelectedFilter(itemValue)
                 }
               >
-                <Picker.Item label="Menor Precio" value="Menor Precio" />
                 <Picker.Item
-                  label="Menor tiempo de espera"
-                  value="Menor tiempo de espera"
+                  label={FILTER_LESS_COST}
+                  value={FILTER_LESS_COST}
+                />
+                <Picker.Item
+                  label={FILTER_LESS_WAITING_TIME}
+                  value={FILTER_LESS_WAITING_TIME}
                 />
               </Picker>
             </View>
             <Button
               bordered
-              onPress={() => console.log("filtrando")}
+              onPress={() => handleSorting()}
               style={{ marginTop: 10, height: 30 }}
             >
               <Text style={{ fontWeight: "bold", fontSize: 17 }}>Aplicar</Text>
             </Button>
           </View>
-          <OptionTravelCard
-            title="Cabify"
-            imgUri={require("../../assets/images/cabify.png")}
-            frequenceMinutes={20}
-            price={123}
-          />
-          <OptionTravelCard
-            title="Uber"
-            imgUri={require("../../assets/images/uber.png")}
-            frequenceMinutes={18}
-            price={984.34}
-          />
+          {isUberFirst ? (
+            <>
+              <OptionTravelCard
+                title="Uber"
+                imgUri={require("../../assets/images/uber.png")}
+                frequenceMinutes={Math.floor(uberInfo?.duration / 60) || 0}
+                price={uberInfo?.total?.amount || 0}
+                currency={convertCurrencyToSymbol(uberInfo?.total?.currency)}
+              />
+              <OptionTravelCard
+                title="Cabify"
+                imgUri={require("../../assets/images/cabify.png")}
+                frequenceMinutes={Math.floor(cabifyInfo?.duration / 60) || 0}
+                price={cabifyInfo?.total?.amount || 0}
+                currency={convertCurrencyToSymbol(cabifyInfo?.total?.currency)}
+              />
+            </>
+          ) : (
+            <>
+              <OptionTravelCard
+                title="Cabify"
+                imgUri={require("../../assets/images/cabify.png")}
+                frequenceMinutes={Math.floor(cabifyInfo?.duration / 60) || 0}
+                price={cabifyInfo?.total?.amount || 0}
+                currency={convertCurrencyToSymbol(cabifyInfo?.total?.currency)}
+              />
+              <OptionTravelCard
+                title="Uber"
+                imgUri={require("../../assets/images/uber.png")}
+                frequenceMinutes={Math.floor(uberInfo?.duration / 60) || 0}
+                price={uberInfo?.total?.amount || 0}
+                currency={convertCurrencyToSymbol(uberInfo?.total?.currency)}
+              />
+            </>
+          )}
         </Card>
       )}
     </View>
@@ -456,7 +533,7 @@ const ItemFull = ({
           ref={destinoRef}
           placeholder="Destino"
           onPress={(data, details = null) => {
-            console.log("details", details);
+            // console.log("details", details);
             let latitude = details?.geometry.location.lat;
             let longitude = details?.geometry.location.lng;
             setgeolocalizationDestino({

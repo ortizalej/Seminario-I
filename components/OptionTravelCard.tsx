@@ -9,6 +9,7 @@ export interface OptionTravelCardProps {
   frequenceMinutes: number;
   imgUri: ImageSourcePropType;
   price: number;
+  currency: string;
   props?: any;
 }
 
@@ -17,6 +18,7 @@ const OptionTravelCard: FC<OptionTravelCardProps> = ({
   title,
   frequenceMinutes,
   price,
+  currency,
   props,
 }) => {
   return (
@@ -93,7 +95,7 @@ const OptionTravelCard: FC<OptionTravelCardProps> = ({
                 padding: 6,
               }}
             >
-              $ {price}
+              {currency} {price?.toFixed(2)}
             </Text>
           </View>
         </View>
