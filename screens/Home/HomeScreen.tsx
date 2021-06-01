@@ -24,6 +24,7 @@ import useUserLogged from "../../hooks/useUserLogged";
 import { User } from "../../types";
 import * as Location from "expo-location";
 import globalStyles from "../../styles/global";
+import { authCabify, estimateTravel } from "../../services/cabify";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
 const OBELISC_LATITUDE = -34.6037389;
@@ -46,6 +47,8 @@ export default function HomeScreen() {
     latitude: 0,
     longitude: 0,
   });
+  const [cabifyPrice, setCabifyPrice] = useState(0);
+
   const [geolocalizationDestino, setgeolocalizationDestino] = useState({
     latitude: 0,
     longitude: 0,
@@ -151,7 +154,10 @@ export default function HomeScreen() {
       onMapReadyHandler();
     }
   }, [geolocalizationOrigen, geolocalizationDestino]);
-
+  const estimateCabify = async () => {
+    const resp = await authCabify();
+    console.log('resp', resp);
+  };
   const onMapReadyHandler = useCallback(() => {
     console.log("entre a onMapReadyHandler", currentLocation);
     // console.log("geolocalizationOrigen", geolocalizationOrigen);
@@ -163,15 +169,17 @@ export default function HomeScreen() {
       const coordinates = [
         currentLocation
           ? {
-              latitude: currentLocation.coords.latitude,
-              longitude: currentLocation.coords.longitude,
-            }
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+          }
           : geolocalizationOrigen,
       ];
       if (geolocalizationDestino.latitude !== 0) {
         coordinates.push(geolocalizationDestino);
       }
       console.log("coordinates", coordinates);
+      estimateCabify();
+      //METER LLAMADO AQUI
       mapRef?.current?.fitToCoordinates(coordinates, {
         animated: true,
         edgePadding: {
@@ -293,7 +301,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
             marginTop: 30,
             backgroundColor: "#FFFFFF",
           }}
-          // onPress={() => swideUpRef.current.showFull()}
+        // onPress={() => swideUpRef.current.showFull()}
         >
           <Input
             placeholder="Introduce tu destino"
@@ -355,7 +363,7 @@ const ItemMini = ({ searchTravels, user, swideUpRef }) => {
             title="Cabify"
             imgUri={require("../../assets/images/cabify.png")}
             frequenceMinutes={20}
-            price={927.02}
+            price={123}
           />
           <OptionTravelCard
             title="Uber"
