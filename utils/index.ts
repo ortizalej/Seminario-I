@@ -3,7 +3,7 @@ export const getResult = async (msg, isSuccess = true) => {
   return result;
 };
 
-export const convertCurrencyToSymbol = (currency: string) => {
+export const convertCurrencyToSymbol = (currency: string | undefined) => {
   let result;
   switch (currency?.toUpperCase()) {
     case "USD":

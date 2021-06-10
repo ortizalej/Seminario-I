@@ -23,6 +23,7 @@ import RegisterScreen from "../screens/Register/RegisterScreen";
 import MenuScreen from "../screens/Menu/MenuDrawer";
 import UserScreen from "../screens/User/UserScreen";
 import TravelsScreen from "../screens/Travels/TravelsScreen";
+import HireTravelCabifyScreen from "../screens/HireTravel/HireTravelCabify";
 
 export default function Navigation({
   colorScheme,
@@ -80,6 +81,11 @@ function RootNavigator() {
         name="User"
         component={UserScreen}
         options={{ title: "User Screen" }}
+      />
+      <Stack.Screen
+        name="HireTravelCabify"
+        component={HireTravelCabifyScreen}
+        options={{ title: "Travel with Cabify Screen" }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen

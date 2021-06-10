@@ -15,6 +15,7 @@ import UserScreen from "../User/UserScreen";
 import CustomSidebarMenu from "../../components/CustomSidebarMenu";
 import TravelsScreen from "../Travels/TravelsScreen";
 import { Feather } from "@expo/vector-icons";
+import HireTravelCabifyScreen from "../HireTravel/HireTravelCabify";
 
 const MenuScreen = () => {
   const Drawer = createDrawerNavigator();
@@ -49,7 +50,7 @@ const MenuScreen = () => {
         }}
         component={userStack}
       />
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="Mis Viajes"
         options={{
           drawerLabel: "Mis Viajes",
@@ -57,7 +58,16 @@ const MenuScreen = () => {
           headerTitleStyle: { marginTop: 20 },
         }}
         component={travelsStack}
-      /> */}
+      />
+      <Drawer.Screen
+        name="Viaje Cabify"
+        options={{
+          drawerLabel: "Viaje Cabify",
+          drawerIcon: () => <Feather name="map" size={25} color="#5985EB" />,
+          headerTitleStyle: { marginTop: 20 },
+        }}
+        component={hireTravelCabifyStack}
+      />
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"
@@ -194,6 +204,33 @@ const travelsStack = ({ navigation }) => {
       <Stack.Screen
         name="TravelsScreen"
         component={TravelsScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <NavigationDrawerStructure navigationProps={navigation} />
+          ),
+          headerTitle: () => <LogoImage />,
+          headerStyle: {
+            backgroundColor: "#FFFFFF",
+            display: "none",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const hireTravelCabifyStack = ({ navigation }) => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator initialRouteName="HireTravelCabifyScreen">
+      <Stack.Screen
+        name="HireTravelCabifyScreen"
+        component={HireTravelCabifyScreen}
         options={{
           title: "",
           headerLeft: () => (

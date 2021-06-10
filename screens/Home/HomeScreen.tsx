@@ -127,7 +127,7 @@ export default function HomeScreen() {
       );
       if (cabifyResponse && cabifyResponse.length) {
         const cabifyItemResp = cabifyResponse[0];
-        console.log("cabifyItemResp", cabifyItemResp);
+        console.log("cabifyItemResp", cabifyResponse);
         setCabifyInfo(cabifyItemResp);
         const uberResponse: UberEstimateItemResponse = {
           distance: cabifyResponse[0].distance,
@@ -148,7 +148,7 @@ export default function HomeScreen() {
                     cabifyItemResp.total.amount * 1.2
                   )
                 : 0,
-            currency: cabifyItemResp?.total.currency,
+            currency: cabifyItemResp?.total?.currency,
           },
         };
         setUberInfo(uberResponse);

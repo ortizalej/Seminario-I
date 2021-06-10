@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Home: undefined;
   Travels: undefined;
   User: undefined;
+  HireTravelCabify: undefined;
   Root: undefined;
   NotFound: undefined;
 };
@@ -59,9 +60,9 @@ export interface Travel {
 }
 
 export interface UberEstimateItemResponse {
-  distance: number;
-  duration: number;
-  total: TotalResponse;
+  distance?: number;
+  duration?: number;
+  total?: TotalResponse;
 }
 
 export interface CabifyEstimateResponse {
@@ -69,13 +70,21 @@ export interface CabifyEstimateResponse {
 }
 
 export interface CabifyEstimateItemResponse {
-  distance: number;
-  duration: number;
-  priceBase: PriceBaseCabifyResponse;
-  product: ProductCabifyResponse;
-  route: string[];
-  supplements: any;
-  total: TotalResponse;
+  distance?: number;
+  duration?: number;
+  eta?: EstimatedResponse;
+  priceBase?: PriceBaseCabifyResponse;
+  product?: ProductCabifyResponse;
+  route?: string[];
+  supplements?: any;
+  total?: TotalResponse;
+}
+
+export interface EstimatedResponse {
+  formatted: string | null;
+  lowAvailability: boolean;
+  max: number;
+  min: number;
 }
 
 export interface PriceBaseCabifyResponse {
@@ -84,23 +93,23 @@ export interface PriceBaseCabifyResponse {
 }
 
 export interface ProductCabifyResponse {
-  description: DescriptionProductCabifyResponse;
-  icon: string;
-  id: string;
-  name: NameCabifyResponse;
+  description?: DescriptionProductCabifyResponse;
+  icon?: string;
+  id?: string;
+  name?: NameCabifyResponse;
 }
 
 export interface DescriptionProductCabifyResponse {
-  en: string;
-  es: string;
-  pt: string;
+  en?: string | null;
+  es?: string | null;
+  pt?: string | null;
 }
 
 export interface NameCabifyResponse {
-  ca: string;
-  en: string;
-  es: string;
-  pt: string;
+  ca?: string | null;
+  en?: string | null;
+  es?: string | null;
+  pt?: string | null;
 }
 
 export interface TotalResponse {
