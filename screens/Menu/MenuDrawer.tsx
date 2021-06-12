@@ -88,7 +88,7 @@ const MenuScreen = () => {
 const HomeStack = ({ navigation }) => {
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator initialRouteName="HomePage">
+    <Stack.Navigator initialRouteName="HomePage" headerMode={"screen"}>
       <Stack.Screen
         name="Passenger"
         component={HomeTabsStack}
@@ -224,7 +224,7 @@ const travelsStack = ({ navigation }) => {
   );
 };
 
-const hireTravelCabifyStack = ({ navigation }) => {
+export const hireTravelCabifyStack = ({ navigation }) => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator initialRouteName="HireTravelCabifyScreen">

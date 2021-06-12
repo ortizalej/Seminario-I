@@ -33,10 +33,10 @@ export default function App() {
   // });
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  let [fontsLoaded] = useFonts({
-    "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
-    zocial: require("./assets/fonts/zocial.ttf"),
-  });
+  // let [fontsLoaded] = useFonts({
+  //   "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
+  //   zocial: require("./assets/fonts/zocial.ttf"),
+  // });
   // console.disableYellowBox = true; // Para deshabilitar los warnings
   LogBox.ignoreAllLogs(); // Para deshabilitar los warnings
   // else {
@@ -47,17 +47,17 @@ export default function App() {
   //     </View>
   //   );
   // }
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  } else if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <ThemeManager>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-        </SafeAreaProvider>
-      </ThemeManager>
-    );
-  }
+  // if (!fontsLoaded) {
+  //   return <AppLoading />;
+  // } else if (!isLoadingComplete) {
+  //   return null;
+  // } else {
+  return (
+    <ThemeManager>
+      <SafeAreaProvider>
+        <Navigation colorScheme={colorScheme} />
+      </SafeAreaProvider>
+    </ThemeManager>
+  );
+  // }
 }

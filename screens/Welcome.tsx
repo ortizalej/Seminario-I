@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 26,
     textAlign: "center",
-    fontFamily: "Roboto",
+    // fontFamily: "Roboto",
     color: "white",
   },
   separator: {

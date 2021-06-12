@@ -45,6 +45,10 @@ export const CustomBadge = styled(Badge)`
   width: 100%;
   height: 160px;
   border-radius: 30px;
+  &:active {
+    border: 2px solid blue;
+    background-color: red;
+  }
 `;
 
 export const InfoContainer = styled.View`

@@ -11,6 +11,7 @@ import {
   BackHandler,
   Platform,
   Dimensions,
+  View as NativeView,
 } from "react-native";
 import { View } from "../../components/Themed";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
@@ -31,6 +32,8 @@ import globalStyles from "../../styles/global";
 import { authCabify, estimateTravel } from "../../services/cabify";
 import Spinner from "../../components/Spinner";
 import { convertCurrencyToSymbol, randomInteger } from "../../utils";
+import { useNavigation } from "@react-navigation/core";
+import { hireTravelCabifyStack } from "../Menu/MenuDrawer";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
 const OBELISC_LATITUDE = -34.6037389;
@@ -276,6 +279,8 @@ export default function HomeScreen() {
             swideUpRef={swideUpRef}
             cabifyInfo={cabifyInfo}
             uberInfo={uberInfo}
+            geolocalizationOrigen={geolocalizationOrigen}
+            geolocalizationDestino={geolocalizationDestino}
           />
         }
         itemFull={
@@ -309,13 +314,16 @@ const ItemMini = ({
   swideUpRef,
   cabifyInfo,
   uberInfo,
+  geolocalizationOrigen,
+  geolocalizationDestino,
 }) => {
   const [selectedFilter, setSelectedFilter] =
     useState<string>(FILTER_LESS_COST);
   const [isUberFirst, setIsUberFirst] = useState<boolean>(false);
-
-  const handleSorting = () => {
-    console.log(selectedFilter);
+  const navigation = useNavigation();
+  const handleSorting = (itemValue) => {
+    console.log(itemValue);
+    setSelectedFilter(itemValue);
     if (selectedFilter === FILTER_LESS_COST) {
       if (cabifyInfo?.total?.amount > uberInfo.total.amount) {
         setIsUberFirst(true);
@@ -366,7 +374,7 @@ const ItemMini = ({
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
               alignItems: "center",
               marginHorizontal: 10,
               backgroundColor: "#EDEDED",
@@ -375,7 +383,7 @@ const ItemMini = ({
             <View
               style={{
                 backgroundColor: "#FFFFFF",
-                width: 220,
+                width: "90%",
                 height: 40,
                 marginTop: 10,
               }}
@@ -385,14 +393,14 @@ const ItemMini = ({
                 mode="dropdown"
                 style={{
                   height: 40,
-                  width: 220,
+                  width: "100%",
                   color: "#000000",
                   borderWidth: 1,
                   borderColor: "#000000",
                 }}
                 textStyle={{ color: "blue" }}
                 onValueChange={(itemValue, itemIndex) =>
-                  setSelectedFilter(itemValue)
+                  handleSorting(itemValue)
                 }
               >
                 <Picker.Item
@@ -405,13 +413,13 @@ const ItemMini = ({
                 />
               </Picker>
             </View>
-            <Button
+            {/* <Button
               bordered
               onPress={() => handleSorting()}
               style={{ marginTop: 10, height: 30 }}
             >
               <Text style={{ fontWeight: "bold", fontSize: 17 }}>Aplicar</Text>
-            </Button>
+            </Button> */}
           </View>
           {isUberFirst ? (
             <>
@@ -421,6 +429,14 @@ const ItemMini = ({
                 frequenceMinutes={Math.floor(uberInfo?.duration / 60) || 0}
                 price={uberInfo?.total?.amount || 0}
                 currency={convertCurrencyToSymbol(uberInfo?.total?.currency)}
+                onPressCard={() =>
+                  navigation.navigate("HireTravelCabify", {
+                    coordsOrigen: geolocalizationOrigen,
+                    coordsDestino: geolocalizationDestino,
+                    info: uberInfo,
+                    company: "Uber",
+                  })
+                }
               />
               <OptionTravelCard
                 title="Cabify"
@@ -428,6 +444,14 @@ const ItemMini = ({
                 frequenceMinutes={Math.floor(cabifyInfo?.duration / 60) || 0}
                 price={cabifyInfo?.total?.amount || 0}
                 currency={convertCurrencyToSymbol(cabifyInfo?.total?.currency)}
+                onPressCard={() =>
+                  navigation.navigate("HireTravelCabify", {
+                    coordsOrigen: geolocalizationOrigen,
+                    coordsDestino: geolocalizationDestino,
+                    info: cabifyInfo,
+                    company: "Cabify",
+                  })
+                }
               />
             </>
           ) : (
@@ -438,6 +462,14 @@ const ItemMini = ({
                 frequenceMinutes={Math.floor(cabifyInfo?.duration / 60) || 0}
                 price={cabifyInfo?.total?.amount || 0}
                 currency={convertCurrencyToSymbol(cabifyInfo?.total?.currency)}
+                onPressCard={() =>
+                  navigation.navigate("HireTravelCabify", {
+                    coordsOrigen: geolocalizationOrigen,
+                    coordsDestino: geolocalizationDestino,
+                    info: cabifyInfo,
+                    company: "Cabify",
+                  })
+                }
               />
               <OptionTravelCard
                 title="Uber"
@@ -445,6 +477,14 @@ const ItemMini = ({
                 frequenceMinutes={Math.floor(uberInfo?.duration / 60) || 0}
                 price={uberInfo?.total?.amount || 0}
                 currency={convertCurrencyToSymbol(uberInfo?.total?.currency)}
+                onPressCard={() =>
+                  navigation.navigate("HireTravelCabify", {
+                    coordsOrigen: geolocalizationOrigen,
+                    coordsDestino: geolocalizationDestino,
+                    info: uberInfo,
+                    company: "Uber",
+                  })
+                }
               />
             </>
           )}
@@ -513,8 +553,8 @@ const ItemFull = ({
                 : "Ubicación Actual",
               geometry: {
                 location: {
-                  lat: currentLocation.coords.latitude,
-                  lng: currentLocation.coords.longitude,
+                  lat: currentLocation?.coords?.latitude,
+                  lng: currentLocation?.coords?.longitude,
                 },
               },
             },
