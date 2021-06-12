@@ -59,7 +59,7 @@ const MenuScreen = () => {
         }}
         component={travelsStack}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Viaje Cabify"
         options={{
           drawerLabel: "Viaje Cabify",
@@ -67,7 +67,7 @@ const MenuScreen = () => {
           headerTitleStyle: { marginTop: 20 },
         }}
         component={hireTravelCabifyStack}
-      />
+      /> */}
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"

@@ -16,17 +16,20 @@ export const ButtonContainer = styled.View`
   width: 90%;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
 `;
 
 export const AvailabilityText = styled.Text`
   font-size: 18px;
   margin-top: 18px;
   margin-left: 10px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
 export const AvailabilitySubText = styled.Text`
   color: ${(props) => (props.lowAvailability ? "red" : "green")};
   font-weight: bold;
+  font-size: 20px;
 `;
 
 export const DistanceText = styled.Text`
@@ -47,33 +50,7 @@ export const CustomBadge = styled(Badge)`
   border-radius: 30px;
   &:active {
     border: 2px solid blue;
-    background-color: red;
   }
-`;
-
-export const InfoContainer = styled.View`
-  flex: 3;
-`;
-
-export const FirstInfoContent = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  height: 70%;
-  margin-left: 10px;
-`;
-
-export const SecondInfoContent = styled.View`
-  margin-left: 10px;
-`;
-
-export const FirstInfoLeftContent = styled.View`
-  flex: 3;
-`;
-
-export const FirstInfoRightContent = styled.View`
-  flex: 2;
-  margin-right: 15px;
 `;
 
 export const TotalPriceText = styled.Text`
@@ -90,16 +67,22 @@ export const CabifyTypeText = styled.Text`
   margin-bottom: 15px;
 `;
 
-export const ArriveCarContainer = styled.View`
+export const TextContainer = styled.View`
+  height: 250px;
+  justify-content: space-between;
+  padding: 15px;
+`;
+
+export const TextContent = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 15px;
 `;
 
-export const ArriveCarText = styled.Text`
+export const CustomText = styled.Text`
   margin-left: 6px;
-  font-size: 16px;
+  font-size: 17px;
 `;
 
 export const TimeArriveCarContainer = styled.View`
@@ -112,4 +95,43 @@ export const TimeArriveCarContainer = styled.View`
 export const TimeArriveCarText = styled.Text`
   margin-left: 6px;
   font-size: 16px;
+`;
+
+export const HeaderContainer = styled.View`
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 90%;
+  margin-top: 20px;
+`;
+
+export const DirectionTextContainer = styled.View``;
+
+export const DirectionLabel = styled.Text`
+  color: ${(props) => props.theme.greyTextColor};
+  font-size: 14px;
+  max-width: 180px;
+`;
+
+export const DirectionText = styled.Text`
+  font-weight: bold;
+  font-size: 14px;
+  max-width: 180px;
+`;
+
+export const AmountContainer = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+`;
+
+export const PriceBadge = styled(Badge)`
+  width: 90%;
+  height: 40px;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f6f6f6;
 `;

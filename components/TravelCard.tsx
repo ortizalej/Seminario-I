@@ -13,7 +13,7 @@ interface Props {
   props?: any;
 }
 
-const getEnterpriseImage = (enterprise: string) => {
+export const getEnterpriseImage = (enterprise: string) => {
   let image: ImageSourcePropType;
   switch (enterprise.toLowerCase()) {
     case "uber":
@@ -27,7 +27,7 @@ const getEnterpriseImage = (enterprise: string) => {
   return image;
 };
 
-const getStatusColor = (status: string) => {
+export const getStatusColor = (status: string) => {
   let color;
   switch (status.toLowerCase()) {
     case "finalizado":
@@ -44,7 +44,7 @@ const getStatusColor = (status: string) => {
   return color;
 };
 
-const DATE_FORMAT = "DD/MM/YYYY HH:mm:ss";
+export const DATE_FORMAT = "DD/MM/YYYY HH:mm:ss";
 const TravelCard: FC<Props> = ({ travel, props }) => {
   return (
     <CardItem
