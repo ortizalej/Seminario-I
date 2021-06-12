@@ -70,7 +70,6 @@ export const updateUserService = async (
   user: User
 ): Promise<ServiceResult<any>> => {
   try {
-    console.log("llamado api update", user);
     const resp = await clientAxios.put(`/users/${user.id}`, user);
     if (resp && resp.data) {
       return getResult(`Datos actualizados correctamente!`, true);

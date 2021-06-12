@@ -5,7 +5,6 @@ import { getResult } from "../utils";
 export const authCabify = async () => {
   try {
     const resp = await clientAxios.post(`cabify/authorization`, {});
-    console.log(resp.data);
     if (resp.data) {
       return getResult(resp.data, true);
     } else {
@@ -20,6 +19,11 @@ export const estimateTravel = async (start, finish) => {
   try {
     const token = await authCabify();
     if (token && token.isSuccess) {
+      console.log("request", {
+        start,
+        finish,
+        token: token.msg.token,
+      });
       const resp = await clientAxios.post(`cabify/estimate`, {
         start,
         finish,

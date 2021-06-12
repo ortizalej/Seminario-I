@@ -19,6 +19,7 @@ import {
   TextContainer,
   AmountContainer,
 } from "./styles";
+
 import { CabifyEstimateItemResponse } from "../../types";
 import { convertCurrencyToSymbol } from "../../utils";
 import {
@@ -74,7 +75,14 @@ import {
 // };
 
 const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
-  const { coordsOrigen, coordsDestino, info, company } = route?.params;
+  const {
+    coordsOrigen,
+    coordsDestino,
+    info,
+    company,
+    origenDirectionText,
+    destinoDirectionText,
+  } = route?.params;
   // const coordsOrigen = { latitude: 1, longitude: 1 };
   // const coordsDestino = { latitude: 1, longitude: 1 };
   // const company = "Cabify";
@@ -89,12 +97,11 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
 
   const handleSubmitUber = async () => {
     const CLIENT_ID_UBER = "0vNYiF4VdcZkm6F2E9UclodnYfHx38L8";
-    const url = `https://m.uber.com/ul/?client_id=<${CLIENT_ID_UBER}>&action=setPickup&pickup[latitude]=${coordsOrigen.latitude}&pickup[longitude]=${coordsOrigen.longitude}&pickup[nickname]=Tu%20Origen&pickup[formatted_address]=1455%20Market%20St%2C%20San%20Francisco%2C%20CA%2094103&dropoff[latitude]=${coordsDestino.latitude},%22longitude%22:${coordsDestino.longitude}%7D,%20%22name%22:%22Goiko%20Grill%22%7D,%7B%22loc%22:%7B%22latitude%22:${coordsDestino.latitude}&dropoff[longitude]=${coordsDestino.longitude}&dropoff[nickname]=Tu%20Destino&dropoff[formatted_address]=1%20Telegraph%20Hill%20Blvd%2C%20San%20Francisco%2C%20CA%2094133&product_id=a1111c8c-c720-46c3-8534-2fcdd730040d`;
+    const url = `https://m.uber.com/ul/?client_id=<${CLIENT_ID_UBER}>&action=setPickup&pickup[latitude]=${coordsOrigen.latitude}&pickup[longitude]=${coordsOrigen.longitude}&pickup[nickname]=${origenDirectionText}&pickup[formatted_address]=1455%20Market%20St%2C%20San%20Francisco%2C%20CA%2094103&dropoff[latitude]=${coordsDestino.latitude},%22longitude%22:${coordsDestino.longitude}%7D,%20%22name%22:%22Goiko%20Grill%22%7D,%7B%22loc%22:%7B%22latitude%22:${coordsDestino.latitude}&dropoff[longitude]=${coordsDestino.longitude}&dropoff[nickname]=${destinoDirectionText}&dropoff[formatted_address]=1%20Telegraph%20Hill%20Blvd%2C%20San%20Francisco%2C%20CA%2094133&product_id=a1111c8c-c720-46c3-8534-2fcdd730040d`;
     Linking.openURL(url);
   };
 
   const handleSubmit = async () => {
-    console.log("company", company);
     switch (company) {
       case "Uber":
         handleSubmitUber();
@@ -120,7 +127,6 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
           size={28}
           color="#5985EB"
           onPress={() => navigation.goBack()}
-          // style={{ marginLeft: -20 }}
         />
         <Image
           source={require("../../assets/images/logo.png")}
@@ -185,9 +191,7 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
                       />
                       <DirectionTextContainer>
                         <DirectionLabel>Lugar de Origen:</DirectionLabel>
-                        <DirectionText>
-                          Origin Address, Origin Address
-                        </DirectionText>
+                        <DirectionText>{origenDirectionText}</DirectionText>
                       </DirectionTextContainer>
                     </View>
                     <View
@@ -206,9 +210,7 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
                       />
                       <DirectionTextContainer>
                         <DirectionLabel>Lugar de Destino:</DirectionLabel>
-                        <DirectionText>
-                          Destinity Address, Origin Address, Origin Address
-                        </DirectionText>
+                        <DirectionText>{destinoDirectionText}</DirectionText>
                       </DirectionTextContainer>
                     </View>
                   </View>

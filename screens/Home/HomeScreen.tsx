@@ -70,6 +70,8 @@ export default function HomeScreen() {
   const [user, setUser] = useState<User>();
   const [haveRoute, setHaveRoute] = useState<String>("none");
   const [loading, setLoading] = useState<boolean>(false);
+  const [origenDirectionText, setOrigenDirectionText] = useState<string>("");
+  const [destinoDirectionText, setDestinoDirectionText] = useState<string>("");
 
   useEffect(() => {
     const getUser = async () => {
@@ -195,7 +197,6 @@ export default function HomeScreen() {
   }, [geolocalizationOrigen, geolocalizationDestino]);
 
   const onMapReadyHandler = useCallback(() => {
-    // console.log("entre a onMapReadyHandler", currentLocation);
     if (Platform.OS === "ios") {
       mapRef?.current?.fitToElements(false);
     } else {
@@ -281,6 +282,8 @@ export default function HomeScreen() {
             uberInfo={uberInfo}
             geolocalizationOrigen={geolocalizationOrigen}
             geolocalizationDestino={geolocalizationDestino}
+            origenDirectionText={origenDirectionText}
+            destinoDirectionText={destinoDirectionText}
           />
         }
         itemFull={
@@ -292,6 +295,8 @@ export default function HomeScreen() {
             handleSearch={handleSearch}
             currentLocation={currentLocation}
             address={currentAddress?.[0]}
+            setOrigenDirectionText={setOrigenDirectionText}
+            setDestinoDirectionText={setDestinoDirectionText}
           />
         }
         animation="easeInEaseOut"
@@ -316,13 +321,14 @@ const ItemMini = ({
   uberInfo,
   geolocalizationOrigen,
   geolocalizationDestino,
+  origenDirectionText,
+  destinoDirectionText,
 }) => {
   const [selectedFilter, setSelectedFilter] =
     useState<string>(FILTER_LESS_COST);
   const [isUberFirst, setIsUberFirst] = useState<boolean>(false);
   const navigation = useNavigation();
   const handleSorting = (itemValue) => {
-    console.log(itemValue);
     setSelectedFilter(itemValue);
     if (selectedFilter === FILTER_LESS_COST) {
       if (cabifyInfo?.total?.amount > uberInfo.total.amount) {
@@ -435,6 +441,8 @@ const ItemMini = ({
                     coordsDestino: geolocalizationDestino,
                     info: uberInfo,
                     company: "Uber",
+                    origenDirectionText: origenDirectionText,
+                    destinoDirectionText: destinoDirectionText,
                   })
                 }
               />
@@ -450,6 +458,8 @@ const ItemMini = ({
                     coordsDestino: geolocalizationDestino,
                     info: cabifyInfo,
                     company: "Cabify",
+                    origenDirectionText: origenDirectionText,
+                    destinoDirectionText: destinoDirectionText,
                   })
                 }
               />
@@ -468,6 +478,8 @@ const ItemMini = ({
                     coordsDestino: geolocalizationDestino,
                     info: cabifyInfo,
                     company: "Cabify",
+                    origenDirectionText: origenDirectionText,
+                    destinoDirectionText: destinoDirectionText,
                   })
                 }
               />
@@ -483,6 +495,8 @@ const ItemMini = ({
                     coordsDestino: geolocalizationDestino,
                     info: uberInfo,
                     company: "Uber",
+                    origenDirectionText: origenDirectionText,
+                    destinoDirectionText: destinoDirectionText,
                   })
                 }
               />
@@ -501,6 +515,8 @@ const ItemFull = ({
   handleSearch,
   currentLocation,
   address,
+  setOrigenDirectionText,
+  setDestinoDirectionText,
 }) => {
   const originRef = useRef(null);
   const destinoRef = useRef(null);
@@ -510,13 +526,20 @@ const ItemFull = ({
       (destinoRef as any).current.focus();
     }
   }, []);
-  // useEffect(() => {
-  //   if (address && originRef && originRef.current) {
-  //     (originRef as any).current.setAddressText(
-  //       `${address.street}, ${address.city} - ${address.country}`
-  //     );
-  //   }
-  // }, [address]);
+
+  const handleLocalSearch = () => {
+    if (originRef && originRef.current) {
+      console.log("averga 1", (originRef as any).current.getAddressText());
+      setOrigenDirectionText((originRef as any).current.getAddressText());
+    }
+
+    if (destinoRef && destinoRef.current) {
+      console.log("averga 2", (destinoRef as any).current.getAddressText());
+      setDestinoDirectionText((destinoRef as any).current.getAddressText());
+    }
+    handleSearch();
+  };
+
   return (
     <View style={[styles.contentContainer, { backgroundColor: "#eeeeee" }]}>
       <Item
@@ -573,7 +596,6 @@ const ItemFull = ({
           ref={destinoRef}
           placeholder="Destino"
           onPress={(data, details = null) => {
-            // console.log("details", details);
             let latitude = details?.geometry.location.lat;
             let longitude = details?.geometry.location.lng;
             setgeolocalizationDestino({
@@ -598,7 +620,7 @@ const ItemFull = ({
           !geolocalizationDestino ||
           geolocalizationDestino.latitude === 0
         }
-        onPress={() => handleSearch()}
+        onPress={() => handleLocalSearch()}
         style={[globalStyles.button, { height: 40 }]}
       >
         <Text style={globalStyles.buttonText}>Buscar Viaje</Text>

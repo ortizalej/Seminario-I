@@ -68,7 +68,7 @@ export const CabifyTypeText = styled.Text`
 `;
 
 export const TextContainer = styled.View`
-  height: 250px;
+  height: 280px;
   justify-content: space-between;
   padding: 15px;
 `;
@@ -116,7 +116,7 @@ export const DirectionLabel = styled.Text`
 export const DirectionText = styled.Text`
   font-weight: bold;
   font-size: 14px;
-  max-width: 180px;
+  max-width: 250px;
 `;
 
 export const AmountContainer = styled.View`
