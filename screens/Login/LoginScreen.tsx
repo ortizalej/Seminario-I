@@ -20,26 +20,25 @@ import { State } from "react-native-gesture-handler";
 import { getItem, saveItem } from "../../utils/storage";
 
 const AND_CLIENT_ID =
-  "224762899944-nj3j84lqgahqm0fmtcdb4vbrae0k1v6c.apps.googleusercontent.com";
+'697141169536-dmouqiibccemb1q1c1fee1pk9erp9dao.apps.googleusercontent.com';
 const WEB_CLIENT_ID =
   "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com";
 async function signInWithGoogleAsync() {
   try {
     const result = await Google.logInAsync({
-      // behavior: "web",
-      // iosClientId: AND_CLIENT_ID,
       androidClientId: AND_CLIENT_ID,
-      // webClientId: WEB_CLIENT_ID,
-      // redirectUrl: "/sarasa",
       scopes: ["profile", "email"],
     });
 
     if (result.type === "success") {
-      return result.accessToken;
+      console.log('RESULT', result);
+      // return result.accessToken;
     } else {
+      console.log('cancelled');
       return { cancelled: true };
     }
   } catch (e) {
+    console.log('e',e)
     return { error: true };
   }
 }
