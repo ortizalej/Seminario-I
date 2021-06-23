@@ -24,6 +24,8 @@ import MenuScreen from "../screens/Menu/MenuDrawer";
 import UserScreen from "../screens/User/UserScreen";
 import TravelsScreen from "../screens/Travels/TravelsScreen";
 import HireTravelCabifyScreen from "../screens/HireTravel/HireTravelCabify";
+import NewPlaceScreen from "../screens/MyPlaces/NewPlaceScreen/NewPlaceScreen";
+import MyPlacesScreen from "../screens/MyPlaces/MyPlacesScreen";
 
 export default function Navigation({
   colorScheme,
@@ -86,6 +88,16 @@ function RootNavigator() {
         name="HireTravelCabify"
         component={HireTravelCabifyScreen}
         options={{ title: "Travel with Cabify Screen" }}
+      />
+      <Stack.Screen
+        name="MyPlacesScreen"
+        component={MyPlacesScreen}
+        options={{ title: "My Places Screen Screen" }}
+      />
+      <Stack.Screen
+        name="NewPlaceScreen"
+        component={NewPlaceScreen}
+        options={{ title: "New Favorite Place Screen Screen" }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen

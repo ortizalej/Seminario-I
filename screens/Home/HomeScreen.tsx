@@ -529,12 +529,10 @@ const ItemFull = ({
 
   const handleLocalSearch = () => {
     if (originRef && originRef.current) {
-      console.log("averga 1", (originRef as any).current.getAddressText());
       setOrigenDirectionText((originRef as any).current.getAddressText());
     }
 
     if (destinoRef && destinoRef.current) {
-      console.log("averga 2", (destinoRef as any).current.getAddressText());
       setDestinoDirectionText((destinoRef as any).current.getAddressText());
     }
     handleSearch();
@@ -563,7 +561,7 @@ const ItemFull = ({
             });
           }}
           query={{
-            key: "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4",
+            key: GOOGLE_MAPS_API_KEY,
           }}
           enablePoweredByContainer={false}
           fetchDetails={true}
@@ -604,7 +602,7 @@ const ItemFull = ({
             });
           }}
           query={{
-            key: "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4",
+            key: GOOGLE_MAPS_API_KEY,
             language: "es",
           }}
           enablePoweredByContainer={false}

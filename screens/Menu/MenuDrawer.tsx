@@ -16,6 +16,7 @@ import CustomSidebarMenu from "../../components/CustomSidebarMenu";
 import TravelsScreen from "../Travels/TravelsScreen";
 import { Feather } from "@expo/vector-icons";
 import HireTravelCabifyScreen from "../HireTravel/HireTravelCabify";
+import MyPlacesScreen from "../MyPlaces/MyPlacesScreen";
 
 const MenuScreen = () => {
   const Drawer = createDrawerNavigator();
@@ -68,6 +69,17 @@ const MenuScreen = () => {
         }}
         component={hireTravelCabifyStack}
       /> */}
+      <Drawer.Screen
+        name="Mis Lugares"
+        options={{
+          drawerLabel: "Mis Lugares",
+          drawerIcon: () => (
+            <AntDesign name="hearto" size={25} color="#5985EB" />
+          ),
+          headerTitleStyle: { marginTop: 20 },
+        }}
+        component={myPlacesStack}
+      />
       <Drawer.Screen
         // style={{ marginTop: 20 }}
         name="Cerrar Sesión"
@@ -231,6 +243,33 @@ export const hireTravelCabifyStack = ({ navigation }) => {
       <Stack.Screen
         name="HireTravelCabifyScreen"
         component={HireTravelCabifyScreen}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <NavigationDrawerStructure navigationProps={navigation} />
+          ),
+          headerTitle: () => <LogoImage />,
+          headerStyle: {
+            backgroundColor: "#FFFFFF",
+            display: "none",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export const myPlacesStack = ({ navigation }) => {
+  const Stack = createStackNavigator();
+  return (
+    <Stack.Navigator initialRouteName="MyPlacesScreen">
+      <Stack.Screen
+        name="MyPlacesScreen"
+        component={MyPlacesScreen}
         options={{
           title: "",
           headerLeft: () => (

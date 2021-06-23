@@ -1,7 +1,7 @@
 import React from "react";
 import clientAxios from "../config/axios";
 import useUserLogged from "../hooks/useUserLogged";
-import { User, ServiceResult } from "../types";
+import { User, ServiceResult, IPlace, Travel } from "../types";
 import { getResult } from "../utils";
 import { saveItem, USERLOGGED } from "../utils/storage";
 
@@ -73,6 +73,81 @@ export const updateUserService = async (
     const resp = await clientAxios.put(`/users/${user.id}`, user);
     if (resp && resp.data) {
       return getResult(`Datos actualizados correctamente!`, true);
+    } else {
+      return getResult("");
+    }
+  } catch (error) {
+    return getResult(error.response.data.errores[0].msg, false);
+  }
+};
+
+export const getTravelsService = async () => {
+  try {
+    const { email } = await useUserLogged();
+    alert(email);
+    const resp = await clientAxios.get(`/users/getAllTravels/${email}`);
+    if (resp.data) {
+      return getResult(resp.data, true);
+    } else {
+      return getResult(`Error al Obtener los lugares`, false);
+    }
+  } catch (error) {
+    return getResult(`Error al Obtener los lugares`, false);
+  }
+};
+
+export const createTravelService = async (
+  travel: Travel
+): Promise<ServiceResult<any>> => {
+  try {
+    const resp = await clientAxios.post(`/travels/`, travel);
+    if (resp && resp.data) {
+      return getResult(`Viaje almacenado correctamente!`, true);
+    } else {
+      return getResult("");
+    }
+  } catch (error) {
+    return getResult(error.response.data.errores[0].msg, false);
+  }
+};
+
+export const getPlacesService = async () => {
+  try {
+    const { email } = await useUserLogged();
+    alert(email);
+    const resp = await clientAxios.get(`/places/${email}`);
+    if (resp.data) {
+      return getResult(resp.data, true);
+    } else {
+      return getResult(`Error al Obtener los lugares`, false);
+    }
+  } catch (error) {
+    return getResult(`Error al Obtener los lugares`, false);
+  }
+};
+
+export const createPlaceService = async (
+  place: IPlace
+): Promise<ServiceResult<any>> => {
+  try {
+    const resp = await clientAxios.post(`/places/`, place);
+    if (resp && resp.data) {
+      return getResult(`Lugar almacenado correctamente!`, true);
+    } else {
+      return getResult("");
+    }
+  } catch (error) {
+    return getResult(error.response.data.errores[0].msg, false);
+  }
+};
+
+export const updatePlaceService = async (
+  place: IPlace
+): Promise<ServiceResult<any>> => {
+  try {
+    const resp = await clientAxios.put(`/places/${place.id}`, place);
+    if (resp && resp.data) {
+      return getResult(`Lugar actualizado correctamente!`, true);
     } else {
       return getResult("");
     }

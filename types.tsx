@@ -20,6 +20,8 @@ export type RootStackParamList = {
   Travels: undefined;
   User: undefined;
   HireTravelCabify: undefined;
+  MyPlacesScreen: undefined;
+  NewPlaceScreen: undefined;
   Root: undefined;
   NotFound: undefined;
 };
@@ -115,6 +117,14 @@ export interface NameCabifyResponse {
 export interface TotalResponse {
   amount?: number;
   currency?: string;
+}
+
+export interface IPlace {
+  id?: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
 }
 
 // Constantes para Async Storage
