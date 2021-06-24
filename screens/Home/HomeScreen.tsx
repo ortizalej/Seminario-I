@@ -335,6 +335,7 @@ const ItemMini = ({
 
   const handleSorting = (itemValue) => {
     setSelectedFilter(itemValue);
+    if (!cabifyInfo || !uberInfo) return;
     if (itemValue === FILTER_LESS_COST) {
       if (cabifyInfo?.total?.amount > uberInfo.total.amount) {
         setIsUberFirst(true);
