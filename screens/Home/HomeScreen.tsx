@@ -15,7 +15,10 @@ import {
 } from "react-native";
 import { View } from "../../components/Themed";
 // import { withSafeAreaInsets } from "react-native-safe-area-context";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {
+  GooglePlacesAutocomplete,
+  Place as IPredefinedPlace,
+} from "react-native-google-places-autocomplete";
 import { Item, Card, Text, Button, Icon, Input, Picker } from "native-base";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
@@ -34,6 +37,7 @@ import Spinner from "../../components/Spinner";
 import { convertCurrencyToSymbol, randomInteger } from "../../utils";
 import { useNavigation } from "@react-navigation/core";
 import { hireTravelCabifyStack } from "../Menu/MenuDrawer";
+import { getPlacesService } from "../../services/userService";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
 const OBELISC_LATITUDE = -34.6037389;
@@ -44,6 +48,17 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const FILTER_LESS_COST = "Menor Precio";
 const FILTER_LESS_WAITING_TIME = "Menor tiempo de espera";
 
+// interface ILocation {
+//   lat: number;
+//   long: number;
+// }
+// interface IGeometry {
+//   location: ILocation;
+// }
+// interface IPredefinedPlace {
+//   description: string;
+//   geometry: IGeometry;
+// }
 interface ISwideRef {
   showMini: () => void;
   showFull: () => void;
@@ -90,31 +105,13 @@ export default function HomeScreen() {
       setCurrentLocation(location);
     })();
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => true
-    );
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   () => true
+    // );
 
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
   }, []);
-
-  // useEffect(() => {
-  //   // if (
-  //   //   geolocalizationOrigen &&
-  //   //   geolocalizationDestino &&
-  //   //   geolocalizationOrigen.latitude !== 0 &&
-  //   //   geolocalizationOrigen.longitude !== 0 &&
-  //   //   geolocalizationDestino.latitude !== 0 &&
-  //   //   geolocalizationDestino.latitude !== 0
-  //   // ) {
-  //   //   setSearchTravels(true);
-  //   //   if (swideUpRef && swideUpRef.current) {
-  //   //     swideUpRef.current.showMini();
-  //   //   }
-  //   // } else {
-  //   //   setSearchTravels(false);
-  //   // }
-  // }, [geolocalizationOrigen, geolocalizationDestino]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -155,6 +152,7 @@ export default function HomeScreen() {
                 : 0,
             currency: cabifyItemResp?.total?.currency,
           },
+          eta: cabifyItemResp?.eta,
         };
         setUberInfo(uberResponse);
       }
@@ -251,13 +249,13 @@ export default function HomeScreen() {
         <Marker
           coordinate={geolocalizationOrigen}
           title={"Origen"}
-          description={"Origen"}
+          description={origenDirectionText}
         />
         {currentLocation && (
           <Marker
             coordinate={geolocalizationDestino}
             title={"Destino"}
-            description={"Destino"}
+            description={destinoDirectionText}
           />
         )}
         <MapViewDirections
@@ -297,6 +295,7 @@ export default function HomeScreen() {
             address={currentAddress?.[0]}
             setOrigenDirectionText={setOrigenDirectionText}
             setDestinoDirectionText={setDestinoDirectionText}
+            setLoading={setLoading}
           />
         }
         animation="easeInEaseOut"
@@ -328,15 +327,21 @@ const ItemMini = ({
     useState<string>(FILTER_LESS_COST);
   const [isUberFirst, setIsUberFirst] = useState<boolean>(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log("cargo itemmini");
+    handleSorting(FILTER_LESS_COST);
+  }, []);
+
   const handleSorting = (itemValue) => {
     setSelectedFilter(itemValue);
-    if (selectedFilter === FILTER_LESS_COST) {
+    if (itemValue === FILTER_LESS_COST) {
       if (cabifyInfo?.total?.amount > uberInfo.total.amount) {
         setIsUberFirst(true);
       } else {
         setIsUberFirst(false);
       }
-    } else if (selectedFilter === FILTER_LESS_WAITING_TIME) {
+    } else if (itemValue === FILTER_LESS_WAITING_TIME) {
       if (cabifyInfo?.duration > uberInfo?.duration) {
         setIsUberFirst(true);
       } else {
@@ -388,13 +393,16 @@ const ItemMini = ({
           >
             <View
               style={{
-                backgroundColor: "#FFFFFF",
-                width: "90%",
-                height: 40,
+                backgroundColor: "transparent",
+                width: "100%",
+                height: 50,
                 marginTop: 10,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
               }}
             >
-              <Picker
+              {/* <Picker
                 selectedValue={selectedFilter}
                 mode="dropdown"
                 style={{
@@ -417,7 +425,46 @@ const ItemMini = ({
                   label={FILTER_LESS_WAITING_TIME}
                   value={FILTER_LESS_WAITING_TIME}
                 />
-              </Picker>
+              </Picker> */}
+              <Button
+                bordered={selectedFilter !== FILTER_LESS_COST}
+                onPress={() => handleSorting(FILTER_LESS_COST)}
+                style={{
+                  marginTop: 10,
+                  height: 32,
+                  width: 130,
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 14,
+                    textAlign: "center",
+                    marginLeft: 4,
+                  }}
+                >
+                  {FILTER_LESS_COST}
+                </Text>
+              </Button>
+              <Button
+                bordered={selectedFilter !== FILTER_LESS_WAITING_TIME}
+                onPress={() => handleSorting(FILTER_LESS_WAITING_TIME)}
+                style={{
+                  marginTop: 10,
+                  height: 32,
+                  width: 130,
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 14,
+                    textAlign: "center",
+                  }}
+                >
+                  {FILTER_LESS_WAITING_TIME}
+                </Text>
+              </Button>
             </View>
             {/* <Button
               bordered
@@ -517,15 +564,54 @@ const ItemFull = ({
   address,
   setOrigenDirectionText,
   setDestinoDirectionText,
+  setLoading,
 }) => {
   const originRef = useRef(null);
   const destinoRef = useRef(null);
+  const [predefinedPlaces, setPredefinedPlaces] = useState<IPredefinedPlace[]>(
+    []
+  );
 
   useEffect(() => {
+    setLoading(true);
+    console.log("cargo itemfull");
+    handlePredefinedPlaces();
     if (destinoRef && destinoRef.current) {
       (destinoRef as any).current.focus();
     }
+    setLoading(false);
   }, []);
+
+  const handlePredefinedPlaces = async () => {
+    const pps: IPredefinedPlace[] = [];
+    const resp = await getPlacesService();
+    if (resp.isSuccess && resp.msg)
+      resp?.msg?.forEach((place) =>
+        pps.push({
+          description: place.address,
+          geometry: {
+            location: {
+              lat: place.latitude,
+              lng: place.longitude,
+            },
+          },
+        })
+      );
+    setPredefinedPlaces(pps);
+  };
+  // [
+  //   {
+  //     description: address
+  //       ? `Ubicación Actual (${address.street}, ${address.city} - ${address.country})`
+  //       : "Ubicación Actual",
+  //     geometry: {
+  //       location: {
+  //         lat: currentLocation?.coords?.latitude,
+  //         lng: currentLocation?.coords?.longitude,
+  //       },
+  //     },
+  //   },
+  // ]
 
   const handleLocalSearch = () => {
     if (originRef && originRef.current) {
@@ -579,6 +665,7 @@ const ItemFull = ({
                 },
               },
             },
+            ...predefinedPlaces,
           ]}
         />
       </Item>
@@ -608,6 +695,7 @@ const ItemFull = ({
           enablePoweredByContainer={false}
           fetchDetails={true}
           styles={searchInputStyles2}
+          predefinedPlaces={predefinedPlaces}
         />
       </Item>
       <Button

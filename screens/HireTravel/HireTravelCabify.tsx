@@ -139,7 +139,9 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
             <ScrollView>
               <AvailabilityText>
                 Demanda actual:{" "}
-                <AvailabilitySubText lowAvailability>
+                <AvailabilitySubText
+                  lowAvailability={info.eta ? info.eta.lowAvailability : false}
+                >
                   {info.eta && info.eta.lowAvailability ? "ALTA" : "BAJA"}
                 </AvailabilitySubText>
               </AvailabilityText>

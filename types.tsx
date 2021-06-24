@@ -65,6 +65,7 @@ export interface UberEstimateItemResponse {
   distance?: number;
   duration?: number;
   total?: TotalResponse;
+  eta?: EstimatedResponse;
 }
 
 export interface CabifyEstimateResponse {

@@ -6,12 +6,13 @@ import {
   ScrollView,
   Text,
   Platform,
+  Alert,
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import * as Location from "expo-location";
-import { Button, Spinner, Form, Item, Input, Label } from "native-base";
+import { Button, Form, Item, Input, Label } from "native-base";
 import { View } from "../../../components/Themed";
 import React, { FC, useEffect, useRef, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -23,6 +24,13 @@ import {
 } from "./newPlace.styles";
 import globalStyles from "../../../styles/global";
 import { AntDesign } from "@expo/vector-icons";
+import Spinner from "../../../components/Spinner";
+import {
+  createPlaceService,
+  deletePlaceService,
+  updatePlaceService,
+} from "../../../services/userService";
+import { IPlace } from "../../../types";
 
 export interface NewPlaceScreenProps {}
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
@@ -55,16 +63,60 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      //validar
+    setTimeout(async () => {
+      const newPlace: IPlace = {
+        name,
+        address,
+        latitude: geoLocationAddress.latitude,
+        longitude: geoLocationAddress.longitude,
+      };
+      if (isAddMode) {
+        onAdd(newPlace);
+      } else {
+        onUpdate(newPlace);
+      }
+
       setLoading(false);
     }, 1000);
   };
 
   const handleDeleteAddress = async () => {
+    Alert.alert("Eliminando Lugar", "¿Estás seguro/a de eliminar este lugar?", [
+      {
+        text: "No",
+        style: "cancel",
+      },
+      { text: "Si", onPress: () => onDelete() },
+    ]);
+  };
+
+  const onAdd = async (req: IPlace) => {
+    const resp = await createPlaceService(req);
+    if (resp.isSuccess) {
+      navigation.goBack();
+    } else {
+      alert(resp.msg);
+    }
+  };
+
+  const onUpdate = async (req: IPlace) => {
+    const resp = await updatePlaceService(req);
+    if (resp.isSuccess) {
+      navigation.goBack();
+    } else {
+      alert(resp.msg);
+    }
+  };
+
+  const onDelete = async () => {
     setLoading(true);
-    setTimeout(() => {
-      //validar
+    setTimeout(async () => {
+      const resp = await deletePlaceService(place);
+      if (resp.isSuccess) {
+        navigation.goBack();
+      } else {
+        alert(resp.msg);
+      }
       setLoading(false);
     }, 1000);
   };
@@ -97,7 +149,6 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
         (addressRef as any).current.setAddressText(place.address);
       }
     }
-    console.log("place", place, isAddMode);
   }, [isAddMode]);
 
   //   useEffect(() => {
@@ -122,7 +173,6 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
   //   console.log("currentLocation", currentLocation);
 
   const onMapReadyHandler = useCallback(() => {
-    console.log("entre, mapref");
     if (Platform.OS === "ios") {
       mapRef?.current?.fitToElements(false);
     } else {
@@ -138,11 +188,9 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
               longitude: OBELISC_LONGITUDE,
             },
       ];
-      console.log("coordinates", coordinates);
       if (geoLocationAddress.latitude !== 0) {
         coordinates.push(geoLocationAddress);
       }
-      // console.log("coordinates", coordinates);
       mapRef?.current?.fitToCoordinates(coordinates, {
         animated: true,
         edgePadding: {
@@ -163,169 +211,173 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
   }, [geoLocationAddress]);
 
   return (
-    <CustomContainer>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          marginBottom: 30,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View
+    <>
+      <CustomContainer>
+        <SafeAreaView
           style={{
-            width: "80%",
-            height: 600,
+            flex: 1,
+            marginBottom: 30,
+            width: "100%",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: 60,
-            position: "relative",
           }}
         >
           <View
             style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "center",
+              width: "80%",
+              height: 600,
               alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 60,
+              position: "relative",
             }}
           >
-            <AntDesign
-              name="arrowleft"
-              size={28}
-              color="#5985EB"
-              onPress={() => navigation.goBack()}
-              style={{ marginRight: 40, marginLeft: -50, marginBottom: 15 }}
-            />
-            <Title>Guardar Dirección</Title>
-          </View>
-          <Form
-            style={{
-              alignItems: "center",
-              justifyContent: "flex-start",
-              //   marginTop: 20,
-              flex: 6,
-            }}
-          >
-            <Item
-              regular
-              style={[
-                globalStyles.input,
-                {
-                  width: "100%",
-                  borderRadius: 2,
-                  height: 50,
-                },
-              ]}
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              {/* <Label>Nombre</Label> */}
-              <Input
-                autoFocus
-                placeholder="Nombre"
-                value={name}
-                style={{ width: "100%", marginTop: 10 }}
-                onChangeText={(texto) => setName(texto)}
+              <AntDesign
+                name="arrowleft"
+                size={28}
+                color="#5985EB"
+                onPress={() => navigation.goBack()}
+                style={{ marginRight: 40, marginLeft: -50, marginBottom: 15 }}
               />
-            </Item>
-            <Item regular>
-              {/* <Label style={{ marginTop: -10 }}>Dirección</Label> */}
-              <GooglePlacesAutocomplete
-                ref={addressRef}
-                placeholder="Dirección"
-                onPress={(data, details = null) => {
-                  console.log("DATASS", details?.geometry.location);
-                  let latitude = details?.geometry.location.lat;
-                  let longitude = details?.geometry.location.lng;
-                  setGeoLocationAddress({
-                    latitude: Number(latitude),
-                    longitude: Number(longitude),
-                  });
-                  setAddress(data.description);
-                }}
-                query={{
-                  key: GOOGLE_MAPS_API_KEY,
-                  language: "es",
-                }}
-                enablePoweredByContainer={false}
-                fetchDetails={true}
-                styles={{ searchAddressStyles }}
-              />
-            </Item>
-          </Form>
-          <View
-            style={{
-              flex: 5,
-              backgroundColor: "transparent",
-              ...StyleSheet.absoluteFillObject,
-              height: 300,
-              marginTop: 340,
-            }}
-          >
-            {geoLocationAddress && address !== "" && (
-              <MapView
-                ref={mapRef}
-                onMapReady={onMapReadyHandler}
-                showsMyLocationButton
-                style={{ flex: 2 }}
-                initialRegion={{
-                  latitude: -34.6037389,
-                  longitude: -58.38157,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
-                }}
-                minZoomLevel={5}
-                maxZoomLevel={17}
-                // onMapReady={() => setIsMapReady(true)}
+              <Title>Guardar Dirección</Title>
+            </View>
+            <Form
+              style={{
+                alignItems: "center",
+                justifyContent: "flex-start",
+                //   marginTop: 20,
+                flex: 6,
+              }}
+            >
+              <Item
+                regular
+                style={[
+                  globalStyles.input,
+                  {
+                    width: "100%",
+                    borderRadius: 2,
+                    height: 50,
+                  },
+                ]}
               >
-                {isMapReady && (
-                  <Marker
-                    coordinate={geoLocationAddress}
-                    title={"Origen"}
-                    description={"Origen"}
-                  />
-                )}
-              </MapView>
-            )}
+                {/* <Label>Nombre</Label> */}
+                <Input
+                  autoFocus
+                  placeholder="Nombre"
+                  value={name}
+                  style={{ width: "100%", marginTop: 10 }}
+                  onChangeText={(texto) => setName(texto)}
+                />
+              </Item>
+              <Item regular>
+                {/* <Label style={{ marginTop: -10 }}>Dirección</Label> */}
+                <GooglePlacesAutocomplete
+                  ref={addressRef}
+                  placeholder="Dirección"
+                  onPress={(data, details = null) => {
+                    let latitude = details?.geometry.location.lat;
+                    let longitude = details?.geometry.location.lng;
+                    console.log(
+                      "coordenadas lugar:",
+                      details?.geometry.location
+                    );
+                    setGeoLocationAddress({
+                      latitude: Number(latitude),
+                      longitude: Number(longitude),
+                    });
+                    setAddress(data.description);
+                  }}
+                  query={{
+                    key: GOOGLE_MAPS_API_KEY,
+                    language: "es",
+                  }}
+                  enablePoweredByContainer={false}
+                  fetchDetails={true}
+                  styles={{ searchAddressStyles }}
+                />
+              </Item>
+            </Form>
+            <View
+              style={{
+                flex: 5,
+                backgroundColor: "transparent",
+                ...StyleSheet.absoluteFillObject,
+                height: 300,
+                marginTop: 340,
+              }}
+            >
+              {geoLocationAddress && address !== "" && (
+                <MapView
+                  ref={mapRef}
+                  onMapReady={onMapReadyHandler}
+                  showsMyLocationButton
+                  style={{ flex: 2 }}
+                  initialRegion={{
+                    latitude: -34.6037389,
+                    longitude: -58.38157,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
+                  }}
+                  minZoomLevel={5}
+                  maxZoomLevel={17}
+                  // onMapReady={() => setIsMapReady(true)}
+                >
+                  {isMapReady && (
+                    <Marker
+                      coordinate={geoLocationAddress}
+                      title={"Origen"}
+                      description={"Origen"}
+                    />
+                  )}
+                </MapView>
+              )}
+            </View>
           </View>
-
-          {loading ? <Spinner /> : null}
-        </View>
-        <ButtonContainer style={{ flex: 1 }}>
-          <Button
-            block
-            primary
-            disabled={!name || !address}
-            style={[
-              globalStyles.button,
-              {
-                marginTop: 20,
-                backgroundColor: !name || !address ? "grey" : "#5985EB",
-              },
-            ]}
-            onPress={() => handleSubmit()}
-          >
-            <Text style={globalStyles.buttonText}>
-              {isAddMode ? "Guardar " : "Modificar "}Ubicación
-            </Text>
-          </Button>
-          {!isAddMode && (
+          <ButtonContainer style={{ flex: 1 }}>
             <Button
               block
               primary
+              disabled={!name || !address}
               style={[
                 globalStyles.button,
-                { marginTop: 10, backgroundColor: "#fe6464" },
+                {
+                  marginTop: 20,
+                  backgroundColor: !name || !address ? "grey" : "#5985EB",
+                },
               ]}
-              onPress={() => handleDeleteAddress()}
+              onPress={() => handleSubmit()}
             >
-              <Text style={globalStyles.buttonText}>Eliminar Ubicación</Text>
+              <Text style={globalStyles.buttonText}>
+                {isAddMode ? "Guardar " : "Modificar "}Ubicación
+              </Text>
             </Button>
-          )}
-        </ButtonContainer>
-        {/* </ScrollView> */}
-      </SafeAreaView>
-    </CustomContainer>
+            {!isAddMode && (
+              <Button
+                block
+                primary
+                style={[
+                  globalStyles.button,
+                  { marginTop: 10, backgroundColor: "#fe6464" },
+                ]}
+                onPress={() => handleDeleteAddress()}
+              >
+                <Text style={globalStyles.buttonText}>Eliminar Ubicación</Text>
+              </Button>
+            )}
+          </ButtonContainer>
+          {/* </ScrollView> */}
+        </SafeAreaView>
+      </CustomContainer>
+      {loading ? <Spinner /> : null}
+    </>
   );
 };
 

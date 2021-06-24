@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, ToastAndroid, Text } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  ToastAndroid,
+  Text,
+  BackHandler,
+} from "react-native";
 import { Checkbox } from "react-native-paper";
 import { View } from "../../components/Themed";
 import { Button, Form, Item, Input, Label, Icon } from "native-base";
@@ -20,7 +26,7 @@ import { State } from "react-native-gesture-handler";
 import { getItem, saveItem } from "../../utils/storage";
 
 const AND_CLIENT_ID =
-'697141169536-dmouqiibccemb1q1c1fee1pk9erp9dao.apps.googleusercontent.com';
+  "697141169536-dmouqiibccemb1q1c1fee1pk9erp9dao.apps.googleusercontent.com";
 const WEB_CLIENT_ID =
   "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com";
 async function signInWithGoogleAsync() {
@@ -31,14 +37,14 @@ async function signInWithGoogleAsync() {
     });
 
     if (result.type === "success") {
-      console.log('RESULT', result);
+      console.log("RESULT", result);
       // return result.accessToken;
     } else {
-      console.log('cancelled');
+      console.log("cancelled");
       return { cancelled: true };
     }
   } catch (e) {
-    console.log('e',e)
+    console.log("e", e);
     return { error: true };
   }
 }
@@ -68,6 +74,11 @@ export default function LoginScreen() {
     //   webClientId: WEB_CLIENT_ID,
     //   offlineAccess: true,
     // });
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => true
+    );
+    return () => backHandler.remove();
   }, [isFocused]);
 
   // const signIn = async () => {
