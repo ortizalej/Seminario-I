@@ -37,7 +37,7 @@ import Spinner from "../../components/Spinner";
 import { convertCurrencyToSymbol, randomInteger } from "../../utils";
 import { useNavigation } from "@react-navigation/core";
 import { hireTravelCabifyStack } from "../Menu/MenuDrawer";
-import { getPlacesService } from "../../services/userService";
+import { getPlacesService } from "../../services/placesService";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCDPgtw3NWuo5MMzVWs90_HF3X4WFzq4r4";
 const OBELISC_LATITUDE = -34.6037389;
@@ -48,17 +48,6 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 const FILTER_LESS_COST = "Menor Precio";
 const FILTER_LESS_WAITING_TIME = "Menor tiempo de espera";
 
-// interface ILocation {
-//   lat: number;
-//   long: number;
-// }
-// interface IGeometry {
-//   location: ILocation;
-// }
-// interface IPredefinedPlace {
-//   description: string;
-//   geometry: IGeometry;
-// }
 interface ISwideRef {
   showMini: () => void;
   showFull: () => void;
@@ -127,6 +116,7 @@ export default function HomeScreen() {
         [geolocalizationOrigen.latitude, geolocalizationOrigen.longitude],
         [geolocalizationDestino.latitude, geolocalizationDestino.longitude]
       );
+      console.log("cabifyResponse 1", cabifyResponse);
       if (cabifyResponse && cabifyResponse.length) {
         const cabifyItemResp = cabifyResponse[0];
         console.log("cabifyItemResp", cabifyResponse);
@@ -155,15 +145,18 @@ export default function HomeScreen() {
           eta: cabifyItemResp?.eta,
         };
         setUberInfo(uberResponse);
-      }
 
-      setSearchTravels(true);
-      if (swideUpRef && swideUpRef.current) {
-        swideUpRef.current.showMini();
+        setSearchTravels(true);
+        if (swideUpRef && swideUpRef.current) {
+          swideUpRef.current.showMini();
+        } else {
+          setSearchTravels(false);
+        }
+      } else {
+        alert("Ocurrió un error al obtener los valores del viaje");
       }
-    } else {
-      setSearchTravels(false);
     }
+
     setLoading(false);
   };
 

@@ -55,7 +55,7 @@ export interface Travel {
   destinationAddress: string;
   status: "Cancelado" | "En Curso" | "Finalizado";
   amount: number;
-  paidMethod: "Efectivo" | "Tarjeta  Crédito" | "Tarjeta Débito";
+  paidMethod?: "Efectivo" | "Tarjeta  Crédito" | "Tarjeta Débito";
   cardNumber?: string;
   totalDistance?: number;
   enterprise: "Uber" | "Cabify";

@@ -64,7 +64,7 @@ const CustomSidebarMenu = (props) => {
           color: "grey",
         }}
         onPress={() =>
-          Linking.openURL("https://instagram.com/passenger_argentina")
+          Linking.openURL("instagram://user?username=passenger_argentina")
         }
       >
         Seguinos en instagram

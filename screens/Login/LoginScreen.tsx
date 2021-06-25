@@ -17,18 +17,10 @@ import { CustomContainer, ButtonContainer, Title } from "./login.styles";
 import { authUserService } from "../../services/userService";
 import * as GoogleSignIn from "expo-google-sign-in";
 import { User, USERLOGGED } from "../../types";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-//   User as GoogleUser,
-// } from "@react-native-community/google-signin";
-import { State } from "react-native-gesture-handler";
 import { getItem, saveItem } from "../../utils/storage";
 
 const AND_CLIENT_ID =
   "697141169536-dmouqiibccemb1q1c1fee1pk9erp9dao.apps.googleusercontent.com";
-const WEB_CLIENT_ID =
-  "224762899944-6vkheget74au7tqij0c9iu01kr53cf1s.apps.googleusercontent.com";
 async function signInWithGoogleAsync() {
   try {
     const result = await Google.logInAsync({

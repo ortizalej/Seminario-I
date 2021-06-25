@@ -1,5 +1,12 @@
 import React, { useState, FC } from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  ToastAndroid,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../styles/global";
 import Spinner from "../../components/Spinner";
@@ -20,7 +27,7 @@ import {
   AmountContainer,
 } from "./styles";
 
-import { CabifyEstimateItemResponse } from "../../types";
+import { CabifyEstimateItemResponse, Travel } from "../../types";
 import { convertCurrencyToSymbol } from "../../utils";
 import {
   FontAwesome5,
@@ -35,44 +42,7 @@ import {
   getStatusColor,
   DATE_FORMAT,
 } from "../../components/TravelCard";
-
-// const info: CabifyEstimateItemResponse = {
-//   distance: 12911,
-//   duration: 1440,
-//   eta: {
-//     formatted: "6 min",
-//     lowAvailability: true,
-//     max: 999999,
-//     min: 0,
-//   },
-//   priceBase: {
-//     amount: 1391,
-//     currency: "ARS",
-//   },
-//   product: {
-//     description: {
-//       en: "The standard option, with all the usual perks",
-//       es: null,
-//       pt: null,
-//     },
-//     icon: "lite",
-//     id: "75dd566797369d1f0927102e535ecac4",
-//     name: {
-//       ca: null,
-//       en: "Cabify Lite",
-//       es: "Cabify Lite",
-//       pt: null,
-//     },
-//   },
-//   route: [
-//     "gzrEt|kcJlAR??^{E??~Ex@??B]Fu@wDk@iD@gBMaHFmFF[?uCBsCD_@B_B?{CD]?yE@mERoACyEHcABU?IAOAQEyBu@gDgAmDiAgDcAyDoAaCy@k@QkD_AGCe@QoEyAuDcAgEmAe@O}@Y_Ac@e@MaD}@iBy@eBi@Bi@QEiAa@wCq@sDkAaBc@kEyAa@QuGqByB}@{Bq@kBu@kBs@k@U_A@}Ac@A[gFyAoF}@uE_AwAc@iEw@qBc@iAOeEgAg@O@KsDy@QMiBgAgC}AeBkAeBeAcDoBeAo@aF}CwD}B}A_AoAw@eAq@{DeCmA_AgCuBk@a@e@]IMKSI]ESYaBO{@Kc@Ka@Yw@Qa@KUMYk@qAMYKSISIWI[K[K[GOEKGIIKOMMIIEQIUEOCO?M?M@KBG@KDIBIFKFMJIHIJABINU\\MRKLMNSRKLIHIJWLQFUHk@Lk@NcB^??oAXi@Li@LcCl@iBd@??yBb@@JoB`@]F[F@Ja@Ni@PYJ_@PYJg@Ra@PWLc@Rg@TOHQHwAp@wAp@WHUJaA^oAd@s@TUHUFyAd@o@NiAX}@Pm@L_B^eANOBO@u@HuANQBS@gBRoANI@G@KBK@qCZwC\\cALuANa@Fc@DcBRoCZy@JO@[D]Dc@De@FeBRuARSBQBw@Lg@H}@NYDu@PiATSFSDgA\\{@Z_AVQDg@Pe@NYJIBKDMDKBQB]Hc@F]B_@D]@U@U@u@?c@AK?KAK?KAg@Ai@CK?KAC?E?OAO?K?QA]?O@K@[@q@Bs@H]D_@Fe@HWHyD@SFUDqAZiAXeAX[FQFKBk@LyA`@oA^oBp@aCr@o@P_@HYFm@Jm@Fg@Ba@@W?OC??g@Kk@Ec@Au@A]AUCQAuBOu@?y@Ba@F??SYOIUKQIIEQKkABc@@E@kDD??E`A?v@AV@PJlA?XBtCD|BH~FLvHH~HPjHPpGLvE?T?@@^??c@Aa@?yDE??KoD?IAEEaA??tDCb@A",
-//   ],
-//   supplements: [],
-//   total: {
-//     amount: 1391,
-//     currency: "ARS",
-//   },
-// };
+import { createTravelService } from "../../services/travelService";
 
 const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
   const {
@@ -83,9 +53,6 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
     origenDirectionText,
     destinoDirectionText,
   } = route?.params;
-  // const coordsOrigen = { latitude: 1, longitude: 1 };
-  // const coordsDestino = { latitude: 1, longitude: 1 };
-  // const company = "Cabify";
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigation = useNavigation();
@@ -102,6 +69,18 @@ const HireTravelCabifyScreen: FC = ({ route }: any | undefined) => {
   };
 
   const handleSubmit = async () => {
+    const newTravel: Travel = {
+      amount: info.total.amount,
+      date: new Date(),
+      originAddress: origenDirectionText,
+      destinationAddress: destinoDirectionText,
+      enterprise: company,
+      status: "Finalizado",
+    };
+
+    console.log("new travel", newTravel);
+    const resp = await createTravelService(newTravel);
+    ToastAndroid.show(resp.msg, ToastAndroid.SHORT);
     switch (company) {
       case "Uber":
         handleSubmitUber();

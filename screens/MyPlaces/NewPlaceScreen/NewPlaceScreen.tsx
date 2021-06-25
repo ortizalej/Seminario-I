@@ -29,7 +29,7 @@ import {
   createPlaceService,
   deletePlaceService,
   updatePlaceService,
-} from "../../../services/userService";
+} from "../../../services/placesService";
 import { IPlace } from "../../../types";
 
 export interface NewPlaceScreenProps {}

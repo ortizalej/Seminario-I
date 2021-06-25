@@ -20,7 +20,7 @@ import {
 import globalStyles from "../../styles/global";
 import { useIsFocused, useNavigation } from "@react-navigation/core";
 import { IPlace } from "../../types";
-import { getPlacesService } from "../../services/userService";
+import { getPlacesService } from "../../services/placesService";
 import Spinner from "../../components/Spinner";
 
 export interface MyPlacesScreenProps {}
@@ -71,7 +71,7 @@ const MyPlacesScreen: FC = () => {
               Guarda tus lugares favoritos
             </Text>
           </Header>
-          <ScrollView style={{ marginBottom: 100 }}>
+          <ScrollView style={{ height: 450, maxHeight: 450 }}>
             {places?.map((place: IPlace, index: number) => (
               <PlaceCard
                 place={place}
