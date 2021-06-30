@@ -65,6 +65,7 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
     setLoading(true);
     setTimeout(async () => {
       const newPlace: IPlace = {
+        id: place ? place.id : null,
         name,
         address,
         latitude: geoLocationAddress.latitude,
@@ -134,6 +135,7 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
   }, []);
 
   useEffect(() => {
+    console.log("place", place);
     if (place) {
       setIsAddMode(false);
     } else {

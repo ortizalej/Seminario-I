@@ -47,7 +47,7 @@ export const createPlaceService = async (
     // } else {
     //   return getResult("");
     // }
-    place.id = places.length.toString();
+    place.id = (places.length + 1).toString();
     places.push(place);
     return getResult(`Lugar almacenado correctamente!`, true);
   } catch (error) {
@@ -65,7 +65,8 @@ export const updatePlaceService = async (
     // } else {
     //   return getResult("");
     // }
-    place.id = places.length.toString();
+    // place.id = places.length.toString();
+    console.log(place);
     places = places.filter((p) => p.id !== place.id);
     places.push(place);
     return getResult(`Lugar actualizado correctamente!`, true);
