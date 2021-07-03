@@ -315,19 +315,6 @@ export default function LoginScreen() {
             />
             <Text style={globalStyles.buttonText}>Continuar con Google</Text>
           </Button>
-          {/* <GoogleSigninButton
-            onPress={() => signIn()}
-            size={GoogleSigninButton.Size.Wide}
-            color={GoogleSigninButton.Color.Dark}
-            style={{ width: 100, height: 100 }}
-          /> */}
-          {/* {loginGoogleLoaded ? (
-            <View>
-              <Text>sarasa</Text>
-            </View>
-          ) : (
-            <Text>Not SignedIn</Text>
-          )} */}
         </ButtonContainer>
         <View
           style={{

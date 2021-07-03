@@ -71,6 +71,7 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
         latitude: geoLocationAddress.latitude,
         longitude: geoLocationAddress.longitude,
       };
+      console.log("isAddMode", isAddMode);
       if (isAddMode) {
         onAdd(newPlace);
       } else {

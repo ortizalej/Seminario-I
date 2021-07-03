@@ -579,18 +579,18 @@ const ItemFull = ({
   const handlePredefinedPlaces = async () => {
     const pps: IPredefinedPlace[] = [];
     const resp = await getPlacesService();
-    if (resp.isSuccess && resp.msg)
-      resp?.msg?.forEach((place) =>
-        pps.push({
-          description: place.address,
-          geometry: {
-            location: {
-              lat: place.latitude,
-              lng: place.longitude,
-            },
+    if (resp.isSuccess && resp.msg) console.log(resp.msg);
+    resp?.msg?.forEach((place) =>
+      pps.push({
+        description: `${place.name} (${place.address})`,
+        geometry: {
+          location: {
+            lat: place.latitude,
+            lng: place.longitude,
           },
-        })
-      );
+        },
+      })
+    );
     setPredefinedPlaces(pps);
   };
   // [

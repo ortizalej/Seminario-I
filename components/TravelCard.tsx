@@ -85,7 +85,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
               <Text style={{ fontWeight: "bold", color: "#5e5c5c" }}>
                 {moment(travel.date.toString()).format(DATE_FORMAT)}
               </Text>
-              <Badge
+              {/* <Badge
                 style={{
                   backgroundColor: getStatusColor(travel.status),
                   height: 16,
@@ -93,7 +93,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                 }}
               >
                 <Text style={{ fontSize: 12 }}>{travel.status}</Text>
-              </Badge>
+              </Badge> */}
             </View>
             <View
               style={{
@@ -165,6 +165,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                   style={{
                     backgroundColor: "#f6f6f6",
                     height: 35,
+                    marginTop: -35,
                   }}
                 >
                   <Text style={{ fontSize: 12, padding: 2 }}>

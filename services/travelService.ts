@@ -107,14 +107,15 @@ const travels: Travel[] = [
 export const getTravelsService = async () => {
   try {
     const { email } = await useUserLogged();
-    // const resp = await clientAxios.get(`/users/getAllTravels/${email}`);
-    // if (resp.data) {
-    //   return getResult(resp.data, true);
-    // } else {
-    //   return getResult(`Error al Obtener los lugares`, false);
-    // }
+    const resp = await clientAxios.get(`users/travel/${email}`);
+    console.log("resp obtener viajes", resp?.data);
+    if (resp.data) {
+      return getResult(resp.data, true);
+    } else {
+      return getResult(`Error al Obtener los lugares`, false);
+    }
 
-    return getResult(travels, true);
+    // return getResult(travels, true);
   } catch (error) {
     return getResult(`Error al Obtener los lugares`, false);
   }
@@ -124,14 +125,15 @@ export const createTravelService = async (
   travel: Travel
 ): Promise<ServiceResult<any>> => {
   try {
-    // const resp = await clientAxios.post(`/travels/`, travel);
-    // if (resp && resp.data) {
-    //   return getResult(`!Que disfrutes tu viaje!`, true);
-    // } else {
-    //   return getResult("");
-    // }
-    travels.push(travel);
-    return getResult(`!Que disfrutes tu viaje!`, true);
+    const { email } = await useUserLogged();
+    const resp = await clientAxios.post(`users/travels/${email}`, travel);
+    if (resp && resp.data) {
+      return getResult(`!Que disfrutes tu viaje!`, true);
+    } else {
+      return getResult("");
+    }
+    // travels.push(travel);
+    // return getResult(`!Que disfrutes tu viaje!`, true);
   } catch (error) {
     return getResult(error.response.data.errores[0].msg, false);
   }

@@ -6,6 +6,7 @@ import { CustomContainer } from "./travel.styles";
 import { Travel } from "../../types";
 import TravelCard from "../../components/TravelCard";
 import { getTravelsService } from "../../services/travelService";
+import { Text, StyleSheet } from "react-native";
 
 export default function TravelsScreen() {
   const isFocused = useIsFocused();
@@ -22,6 +23,7 @@ export default function TravelsScreen() {
           return await getTravelsService();
         };
         const resp = await getTravels();
+        console.log("travels", resp);
         setTravels(resp.msg);
         setLoading(false);
       })();
@@ -41,13 +43,26 @@ export default function TravelsScreen() {
     <CustomContainer>
       <SafeAreaView style={{ flex: 1, marginBottom: 30 }}>
         <ScrollView>
-          {travels &&
-            travels.map((travel) => (
+          {travels && travels.length ? (
+            travels?.map((travel) => (
               <TravelCard key={travel.id} travel={travel} />
-            ))}
+            ))
+          ) : (
+            <Text style={[styles.text]}>Aún no realizó viajes</Text>
+          )}
         </ScrollView>
       </SafeAreaView>
       {loading && <Spinner />}
     </CustomContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#656771",
+    marginBottom: 12,
+    marginTop: 200,
+  },
+});
