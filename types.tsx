@@ -46,6 +46,7 @@ export interface User {
   password: string;
   image?: string;
   remembered: boolean;
+  fromGoogle: boolean;
 }
 
 export interface Travel {

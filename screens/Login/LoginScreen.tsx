@@ -27,14 +27,18 @@ async function signInWithGoogleAsync() {
       androidClientId: AND_CLIENT_ID,
       scopes: ["profile", "email"],
     });
-
     if (result.type === "success") {
-      console.log("RESULT", result);
-      // return result.accessToken;
+      return result.user;
     } else {
-      console.log("cancelled");
-      return { cancelled: true };
+      return null;
     }
+    // if (result.type === "success") {
+    //   return result.user;
+    //   // return result.accessToken;
+    // } else {
+    //   console.log("cancelled");
+    //   return null;
+    // }
   } catch (e) {
     console.log("e", e);
     return { error: true };
@@ -123,8 +127,21 @@ export default function LoginScreen() {
     }
   };
 
-  const signInWithGoogle = () => {
-    signInWithGoogleAsync();
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const googleUsr: Google.GoogleUser | any = await signInWithGoogleAsync();
+      console.log("googleUsr", googleUsr);
+      if (!googleUsr) {
+        setMsg("Ocurrio un error al loguearse con Google");
+      } else {
+        loginFromGoogle(googleUsr.email, "123456");
+      }
+    } catch (error) {
+      setMsg("Ocurrio un error al loguearse con Google");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onPress = () => {
@@ -157,6 +174,32 @@ export default function LoginScreen() {
         image: resp.msg.image,
         password: password,
         remembered: rememberMe,
+        fromGoogle: false,
+      });
+      setLoading(false);
+      navigation.navigate("Menu");
+    } else {
+      setMsg(resp.msg);
+      setLoading(false);
+    }
+  };
+
+  const loginFromGoogle = async (email, password) => {
+    console.log("loginFromGoogle", email, password);
+    const resp = await authUserService(email, password);
+    console.log("resppp", resp);
+    if (resp.isSuccess) {
+      await saveItem(USERLOGGED, {
+        id: resp.msg._id,
+        email: resp.msg.email,
+        name: resp.msg.name,
+        surname: resp.msg.surname,
+        phoneNumber: resp.msg.phoneNumber,
+        prefix: resp.msg.prefix,
+        image: resp.msg.image,
+        password: password,
+        remembered: true,
+        fromGoogle: true,
       });
       setLoading(false);
       navigation.navigate("Menu");
