@@ -64,8 +64,9 @@ const NewPlaceScreen: FC = ({ route }: any | undefined) => {
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(async () => {
+      console.log("sarñamgaaa", place);
       const newPlace: IPlace = {
-        id: place ? place.id : null,
+        id: place ? place._id : null,
         name,
         address,
         latitude: geoLocationAddress.latitude,

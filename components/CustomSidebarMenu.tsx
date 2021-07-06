@@ -10,7 +10,9 @@ import {
   Text,
   Linking,
 } from "react-native";
-
+import { Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -57,7 +59,41 @@ const CustomSidebarMenu = (props) => {
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
-      <Text
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+      >
+        <AntDesign
+          name="instagram"
+          size={30}
+          color="#5985EB"
+          style={{ marginRight: 15 }}
+          onPress={() =>
+            Linking.openURL("instagram://user?username=passenger_argentina")
+          }
+        />
+        <Entypo
+          name="facebook-with-circle"
+          size={30}
+          color="#5985EB"
+          style={{ marginRight: 15 }}
+          onPress={() => Linking.openURL("fb://page/104006838563129")}
+        />
+        <MaterialCommunityIcons
+          name="web"
+          size={30}
+          color="#5985EB"
+          style={{ marginRight: 15 }}
+          onPress={() =>
+            Linking.openURL("https://guidorusso95.wixsite.com/passenger")
+          }
+        />
+      </View>
+      {/* <Text
         style={{
           fontSize: 16,
           textAlign: "center",
@@ -68,7 +104,7 @@ const CustomSidebarMenu = (props) => {
         }
       >
         Seguinos en instagram
-      </Text>
+      </Text> */}
     </SafeAreaView>
   );
 };

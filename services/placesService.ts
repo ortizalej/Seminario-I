@@ -66,7 +66,8 @@ export const updatePlaceService = async (
 ): Promise<ServiceResult<any>> => {
   try {
     const { email } = await useUserLogged();
-    const resp = await clientAxios.post(`users/places/${email}`, place);
+    console.log("req update", place);
+    const resp = await clientAxios.put(`users/places/${email}`, place);
     console.log("resp actualizar lugar", resp?.data);
     if (resp && resp.data) {
       return getResult(`Lugar actualizado correctamente!`, true);
@@ -90,7 +91,7 @@ export const deletePlaceService = async (
     const req = {
       data: { place },
     };
-    console.log("req", req);
+    console.log("req delete", req);
     const resp = await clientAxios.delete(`users/places/${email}`, req);
     console.log("resp eliminar lugar", resp?.data);
     if (resp && resp.data) {
