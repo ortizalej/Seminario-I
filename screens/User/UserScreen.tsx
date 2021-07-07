@@ -33,6 +33,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useUserLogged from "../../hooks/useUserLogged";
 import { saveItem } from "../../utils/storage";
 import ImagePicker from "../../components/ImagePicker";
+import * as ImagePickerr from "expo-image-picker";
 
 interface SelectedCountry {
   name: string;
@@ -54,6 +55,7 @@ export default function UserScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [fromGoogle, setFromGoogle] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const [showTerms, setShowTerms] = useState<boolean>(false);
@@ -85,6 +87,7 @@ export default function UserScreen() {
       setPassword(user.password);
       setPrefix(user.prefix);
       setPhoneNumber(user.phoneNumber);
+      setFromGoogle(user.fromGoogle);
       user.image && setImage(user.image);
     }
   }, [user]);
@@ -109,7 +112,7 @@ export default function UserScreen() {
     if (
       name === "" ||
       surname === "" ||
-      prefix === "" ||
+      // prefix === "" ||
       phoneNumber === "" ||
       email === "" ||
       password === ""
@@ -128,7 +131,7 @@ export default function UserScreen() {
     }
     //actualizar el usuario/cuenta
     try {
-      updateUser();
+      await updateUser();
     } catch (error) {
       setMsg(error.message.replace("Error:", ""));
       console.log("errorr", error);
@@ -150,6 +153,7 @@ export default function UserScreen() {
       image,
       password,
       remembered: user ? user.remembered : false,
+      fromGoogle,
     };
     const resp = await updateUserService(userToUpdate);
     if (resp.isSuccess) {
@@ -283,8 +287,17 @@ export default function UserScreen() {
                     <Input
                       autoFocus
                       placeholder="Prefijo"
-                      onFocus={() => setVisible(true)}
-                      value={prefix ? prefix : selectedCountry?.dial_code}
+                      onFocus={() => {
+                        setVisible(true);
+                        console.log("foco");
+                      }}
+                      value={
+                        prefix
+                          ? prefix
+                          : selectedCountry
+                          ? selectedCountry.dial_code
+                          : ""
+                      }
                     />
                     <PrefixPicker
                       visible={visible}
@@ -297,7 +310,7 @@ export default function UserScreen() {
                     <Input
                       keyboardType="numeric"
                       placeholder="Teléfono"
-                      value={String(phoneNumber)}
+                      value={phoneNumber && String(phoneNumber)}
                       onChangeText={(val) => setPhoneNumber(val)}
                     />
                   </ContainerInput>

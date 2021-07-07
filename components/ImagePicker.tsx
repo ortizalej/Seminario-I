@@ -1,11 +1,12 @@
 import React, { FC, useEffect } from "react";
-import { SafeAreaView, ScrollView } from "react-native";
+import { Platform, SafeAreaView, ScrollView } from "react-native";
 import { Text } from "react-native";
 import { View } from "./Themed";
 import { useNavigation } from "@react-navigation/core";
 import { AssetsSelector } from "expo-images-picker";
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
+import * as ImagePickerr from "expo-image-picker";
 
 export const CustomContainer = styled.View`
   flex: 1;
@@ -38,6 +39,18 @@ interface ImagePickerProps {
 }
 const ImagePicker: FC<ImagePickerProps> = ({ setImage, onClose }) => {
   //   const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePickerr.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+  }, []);
 
   const goBack = () => {
     onClose();

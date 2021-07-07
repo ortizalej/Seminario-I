@@ -47,6 +47,32 @@ export const authUserService = async (email, password) => {
   }
 };
 
+export const authGoogleUserService = async (user) => {
+  try {
+    const resp = await clientAxios.post(`/users/google/${user.email}`, user);
+    if (resp.data.user) {
+      return getResult(resp.data.user, true);
+    } else {
+      return getResult(`El usuario indicado no se encuentra registrado`, false);
+    }
+  } catch (error) {
+    if (
+      error &&
+      error.response &&
+      error.response.data &&
+      error.response.data.msg
+    ) {
+      return getResult(error.response.data.msg, false);
+    } else {
+      console.log("error", error);
+      return getResult(
+        "Error al intentar loguearse, revise su conexión",
+        false
+      );
+    }
+  }
+};
+
 export const createUserService = async (
   user: User
 ): Promise<ServiceResult<any>> => {

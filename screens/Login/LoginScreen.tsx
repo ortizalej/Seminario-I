@@ -14,7 +14,10 @@ import globalStyles from "../../styles/global";
 import * as Google from "expo-google-app-auth";
 import Spinner from "../../components/Spinner";
 import { CustomContainer, ButtonContainer, Title } from "./login.styles";
-import { authUserService } from "../../services/userService";
+import {
+  authGoogleUserService,
+  authUserService,
+} from "../../services/userService";
 import * as GoogleSignIn from "expo-google-sign-in";
 import { User, USERLOGGED } from "../../types";
 import { getItem, saveItem } from "../../utils/storage";
@@ -135,7 +138,18 @@ export default function LoginScreen() {
       if (!googleUsr) {
         setMsg("Ocurrio un error al loguearse con Google");
       } else {
-        loginFromGoogle(googleUsr.email, "123456");
+        const newUser: User = {
+          email: googleUsr.email,
+          password: "123456",
+          fromGoogle: true,
+          name: googleUsr.givenName,
+          surname: googleUsr.familyName,
+          image: googleUsr.photoUrl,
+          phoneNumber: "",
+          prefix: "",
+          remembered: true,
+        };
+        loginFromGoogle(newUser);
       }
     } catch (error) {
       setMsg("Ocurrio un error al loguearse con Google");
@@ -184,9 +198,9 @@ export default function LoginScreen() {
     }
   };
 
-  const loginFromGoogle = async (email, password) => {
-    console.log("loginFromGoogle", email, password);
-    const resp = await authUserService(email, password);
+  const loginFromGoogle = async (newUser) => {
+    console.log("loginFromGoogle", newUser);
+    const resp = await authGoogleUserService(newUser);
     console.log("resppp", resp);
     if (resp.isSuccess) {
       await saveItem(USERLOGGED, {

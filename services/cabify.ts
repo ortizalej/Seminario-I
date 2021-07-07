@@ -19,7 +19,7 @@ export const estimateTravel = async (start, finish) => {
   try {
     const token = await authCabify();
     if (token && token.isSuccess) {
-      console.log("request", {
+      console.log("request estimateTravel", {
         start,
         finish,
         token: token.msg.token,
@@ -32,6 +32,7 @@ export const estimateTravel = async (start, finish) => {
       if (resp && resp.data && resp.data.data) {
         return resp.data.data;
       } else {
+        console.log("Ocurrio un error", resp);
         throw "Problemas al obtener info de cabify";
       }
     } else {

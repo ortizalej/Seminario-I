@@ -104,6 +104,8 @@ export default function HomeScreen() {
 
   const handleSearch = async () => {
     setLoading(true);
+    // console.log("geolocalizationOrigen", geolocalizationOrigen);
+    // console.log("geolocalizationDestino", geolocalizationDestino);
     if (
       geolocalizationOrigen &&
       geolocalizationDestino &&
