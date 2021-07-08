@@ -55,7 +55,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
         style={{
           backgroundColor: "#EDEDED",
           width: "100%",
-          height: 120,
+          height: 150,
           borderRadius: 30,
         }}
       >
@@ -67,7 +67,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
               width: "100%",
               height: 120,
               //   paddingVertical: 5,
-              padding: 10,
+              padding: 8,
               backgroundColor: "#EDEDED",
               borderRadius: 30,
             }}
@@ -80,6 +80,8 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: "transparent",
+                marginBottom: 10,
+                marginTop: -10,
               }}
             >
               <Text style={{ fontWeight: "bold", color: "#5e5c5c" }}>
@@ -158,14 +160,13 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                   flex: 2,
                   backgroundColor: "transparent",
                   maxWidth: 100,
-                  marginRight: 10,
                 }}
               >
                 <Badge
                   style={{
                     backgroundColor: "#f6f6f6",
                     height: 35,
-                    marginTop: -35,
+                    marginTop: -5,
                   }}
                 >
                   <Text style={{ fontSize: 12, padding: 2 }}>
@@ -173,7 +174,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                   </Text>
                 </Badge>
               </View>
-              <View
+              {/* <View
                 style={{
                   flex: 1,
                   marginRight: -10,
@@ -181,7 +182,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                 }}
               >
                 <Octicons name="chevron-right" size={30} color="#5985EB" />
-              </View>
+              </View> */}
             </View>
             <View
               style={{
@@ -190,6 +191,8 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 marginRight: 10,
+                marginTop: 10,
+                marginBottom: -10,
                 backgroundColor: "transparent",
               }}
             >

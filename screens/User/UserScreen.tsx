@@ -282,10 +282,9 @@ export default function UserScreen() {
                   />
                 </Item>
                 <InputContainer style={{ marginBottom: 0 }}>
-                  <ContainerInput floatingLabel style={{ flex: 1 }}>
-                    <Label>Prefijo</Label>
+                  <ContainerInput fixedLabel style={{ flex: 1 }}>
+                    {/* <Label>Prefijo</Label> */}
                     <Input
-                      autoFocus
                       placeholder="Prefijo"
                       onFocus={() => {
                         setVisible(true);

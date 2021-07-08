@@ -428,7 +428,7 @@ const ItemMini = ({
                 style={{
                   marginTop: 10,
                   height: 32,
-                  width: 130,
+                  width: 160,
                 }}
               >
                 <Text
@@ -436,7 +436,7 @@ const ItemMini = ({
                     fontWeight: "bold",
                     fontSize: 14,
                     textAlign: "center",
-                    marginLeft: 4,
+                    marginLeft: 25,
                   }}
                 >
                   {FILTER_LESS_COST}
@@ -448,7 +448,7 @@ const ItemMini = ({
                 style={{
                   marginTop: 10,
                   height: 32,
-                  width: 130,
+                  width: 160,
                 }}
               >
                 <Text
