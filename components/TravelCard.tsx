@@ -170,7 +170,7 @@ const TravelCard: FC<Props> = ({ travel, props }) => {
                   }}
                 >
                   <Text style={{ fontSize: 12, padding: 2 }}>
-                    $ {travel.amount}
+                    $ {travel.amount?.toFixed(3)}
                   </Text>
                 </Badge>
               </View>
